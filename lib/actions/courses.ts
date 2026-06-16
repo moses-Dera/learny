@@ -160,3 +160,56 @@ export async function publishCourseAction(courseId: string, isPublished: boolean
     return { error: "Failed to update course status." };
   }
 }
+
+const updateCourseSchema = z.object({
+  title: z.string().min(3).max(100).optional(),
+  description: z.string().max(500).optional().or(z.literal("")),
+  price: z.coerce.number().min(0).optional(),
+  categoryId: z.string().optional().nullable(),
+  level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]).optional(),
+});
+
+export async function updateCourseAction(courseId: string, formData: FormData) {
+  const session = await auth();
+
+  if (!session?.user?.id || (session.user.role !== "INSTRUCTOR" && session.user.role !== "ADMIN")) {
+    return { error: "Unauthorized." };
+  }
+
+  const data = {
+    title: formData.get("title") ? formData.get("title") as string : undefined,
+    description: formData.get("description") !== null ? formData.get("description") as string : undefined,
+    price: formData.get("price") ? formData.get("price") : undefined,
+    level: formData.get("level") ? formData.get("level") as string : undefined,
+  };
+
+  const parsed = updateCourseSchema.safeParse(data);
+
+  if (!parsed.success) {
+    return {
+      error: "Invalid fields",
+      details: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const existing = await prisma.course.findUnique({
+      where: { id: courseId, instructorId: session.user.id },
+    });
+
+    if (!existing) {
+      return { error: "Course not found or unauthorized." };
+    }
+
+    await prisma.course.update({
+      where: { id: courseId },
+      data: parsed.data,
+    });
+
+    revalidatePath(`/instructor/courses/${courseId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("[UPDATE_COURSE_ERROR]", error);
+    return { error: "Failed to update course details." };
+  }
+}

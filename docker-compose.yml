@@ -8,3 +8,19 @@ services:
       - 1025:1025
     environment:
       MP_MAX_MESSAGES: 5000
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: lms-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lms
+    volumes:
+      - lms-pgdata-fresh:/var/lib/postgresql/data
+
+volumes:
+  lms-pgdata-fresh:

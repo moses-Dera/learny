@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 const VALID_PAGES: Record<string, { title: string; description: string }> = {
   "pricing": { title: "Pricing & Plans", description: "Simple, transparent pricing for learners and teams." },
@@ -42,9 +42,9 @@ export default async function GenericPage({ params }: { params: Promise<{ slug: 
           <p className="text-sm text-muted-foreground italic mb-4">
             Note: This is a placeholder page generated for demonstration purposes. In a production environment, this route would render content from a headless CMS or statically generated markdown files.
           </p>
-          <Button asChild variant="default" className="w-full">
-            <Link href="/">Return to Home</Link>
-          </Button>
+          <Link href="/" className={buttonVariants({ variant: "default", className: "w-full" })}>
+            Return to Home
+          </Link>
         </div>
       </div>
     </div>

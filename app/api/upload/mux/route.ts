@@ -15,7 +15,6 @@ export async function POST(req: Request) {
     const upload = await mux.video.uploads.create({
       new_asset_settings: {
         playback_policy: ["public"],
-        mp4_support: "standard", // Useful if you want users to be able to download the video
       },
       cors_origin: "*", // Allow uploads from anywhere (in prod, you can lock this to your domain)
     });

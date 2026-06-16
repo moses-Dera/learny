@@ -38,7 +38,7 @@ A modern, production-ready Learning Management System built to handle secure vid
 ### 1. Prerequisites
 
 - Node.js 18.17 or later
-- A PostgreSQL database (or Neon account)
+- [Docker](https://www.docker.com/) (Required for local Postgres and Mailpit email testing)
 
 ### 2. Installation
 
@@ -58,23 +58,37 @@ Copy the `.env.example` file to `.env` and fill in your keys:
 cp .env.example .env
 ```
 
-*Note: Make sure to fill in `AUTH_SECRET` (generate with `openssl rand -base64 32`) and your database connection strings.*
+*Note: Make sure to fill in `AUTH_SECRET` (generate with `openssl rand -base64 32`). For local development, the database connection strings are pre-configured to use the Docker container.*
 
-### 4. Database Setup
+### 4. Database Initialization
 
-Push the schema to your database. Because we are using Prisma 7 with Neon, ensure your `DIRECT_URL` is set in your `.env` for this to work:
+Since we use a local Docker Postgres database, you must start the container and push the schema before your first run:
 
 ```bash
+docker compose up -d postgres
 npx prisma db push
+docker compose down
 ```
 
 ### 5. Start the Development Server
+
+Our custom `npm run dev` script will automatically start the required Docker containers (Postgres & Mailpit) and the Next.js server. When you stop it, it will gracefully shut the containers down!
 
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 6. View the Database
+
+To interact with your local data, you can use Prisma Studio's visual interface:
+
+```bash
+npx prisma studio
+```
+
+This will open a UI at [http://localhost:5555](http://localhost:5555) where you can easily view and edit all records.
 
 ---
 

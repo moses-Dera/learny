@@ -31,6 +31,7 @@ enum CourseLevel {
 }
 
 enum VideoStatus {
+  PENDING
   PROCESSING
   READY
   ERROR
@@ -164,7 +165,7 @@ model Lesson {
   muxPlaybackId   String?
   muxUploadId     String?     @unique // idempotency key for Mux webhook
   muxAssetId      String?
-  videoStatus     VideoStatus @default(PROCESSING)
+  videoStatus     VideoStatus @default(PENDING)
   durationSeconds Int?
   order           Int
   isFree          Boolean     @default(false)

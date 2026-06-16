@@ -6,6 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { PlusCircle, ArrowLeft, MoreVertical, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { CurriculumBuilder } from "@/components/course/curriculum-builder";
+import { PublishButton } from "@/components/course/publish-button";
 
 export const metadata: Metadata = {
   title: "Course Management | Instructor Studio",
@@ -68,18 +69,7 @@ export default async function CourseManagementPage({
           <Link href={`/instructor/courses/${course.id}/edit`} className={buttonVariants({ variant: "outline" })}>
             Edit Details
           </Link>
-          <form action={async () => {
-            "use server";
-            const { publishCourseAction } = await import("@/lib/actions/courses");
-            await publishCourseAction(course.id, course.status === "DRAFT");
-          }}>
-            <Button 
-              variant={course.status === "PUBLISHED" ? "secondary" : "default"}
-              type="submit"
-            >
-              {course.status === "PUBLISHED" ? "Unpublish Course" : "Publish Course"}
-            </Button>
-          </form>
+          <PublishButton courseId={course.id} isPublished={course.status === "PUBLISHED"} />
         </div>
       </div>
 

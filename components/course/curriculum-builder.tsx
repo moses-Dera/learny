@@ -109,7 +109,7 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {lesson.videoStatus === 'PENDING' && (
+                          {(lesson.videoStatus === 'PENDING' || lesson.videoStatus === 'PROCESSING') && (
                             <Button 
                               size="sm" 
                               variant="secondary" 
@@ -127,7 +127,7 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
                       </div>
 
                       {/* Video Uploader Dropzone */}
-                      {uploadingTo === lesson.id && lesson.videoStatus === 'PENDING' && (
+                      {uploadingTo === lesson.id && (lesson.videoStatus === 'PENDING' || lesson.videoStatus === 'PROCESSING') && (
                         <div className="mt-4 border-t border-border pt-4">
                           <VideoUploader 
                             lessonId={lesson.id} 
