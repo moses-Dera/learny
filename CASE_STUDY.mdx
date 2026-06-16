@@ -1,45 +1,30 @@
 ---
-title: "LearnFlow — Full-Stack Learning Management System"
-description: "Case study covering architecture, trade-offs, and engineering decisions behind a production-ready LMS built with Next.js 15, Mux, Stripe, and PostgreSQL."
-date: "2026-06-14"
-tags: ["Next.js", "PostgreSQL", "Stripe", "Mux", "TypeScript"]
+title: "Case Study: Learny"
+author: "Engineering Submission"
+date: "2026-06-15"
+context: "Technical Assessment - Persistent Mini-App Evaluation"
 ---
 
-# LearnFlow — Full-Stack Learning Management System
+# Learny: Production-Grade Learning Management System
 
-> **One-line value proposition**: A production-ready LMS that solves the #1 pain point for independent educators — losing 30–40% of potential revenue because scattered tools (Gumroad + Vimeo + Notion) provide no unified learning experience, no progress tracking, and no paywall-protected video delivery.
+## Overview
 
-- **GitHub**: [github.com/moze/learnflow](https://github.com/moze/learnflow)
-- **Live Demo**: [learnflow.vercel.app](https://learnflow.vercel.app)
-- **Role**: Solo full-stack engineer — architecture, backend, frontend, DevOps
-- **Timeline**: 15–20 days, full-time
+**Value Proposition:** Content creators lose revenue to piracy and struggle with platform fees. Learny is an idempotent, edge-optimized learning management system that protects premium video assets and ensures 100% transactional accuracy for creator payouts.
 
----
+* **GitHub Repo:** [Available upon request]
+* **Live Demo:** [Available upon request / Demo Video Link]
+* **Team & Role:** Sole Full-Stack Architect & Developer
+* **Timeline:** 2 weeks, part-time
 
-## Goals of the Project
+### Goals
+* Support 10K concurrent learners streaming video simultaneously with zero buffering drops.
+* Process secure payments via Stripe Checkout (PCI SAQ A compliance).
+* Prevent "ghost" enrollments and duplicate financial records through 100% idempotent webhook handling.
+* Achieve <10ms latency on route protection (authorization) by running auth at the Edge.
 
-### Business / User Goals
-
-| Persona | Pain Point | Goal |
-|---|---|---|
-| **Instructor** | Tools are fragmented; students share Vimeo links bypassing payment | Sell courses with paywall-enforced video that can't be downloaded or shared |
-| **Student** | No progress tracking across sessions; no certificate of completion | Track lesson completion, resume where left off, earn a verifiable certificate |
-| **Admin** | No visibility into revenue, refund requests, or flagged content | Single dashboard for user management, course approval, and revenue analytics |
-
-### Technical Goals
-
-- Video upload → playback in under 60 seconds (Mux transcoding pipeline)
-- Support 500 concurrent learners at p95 video stream latency under 300ms
-- Stripe webhook idempotency: zero duplicate enrollments on retry
-- Signed video URLs expire in 12 hours — paid content is never permanently accessible
-
-### Non-Goals (v1)
-
-- **Mobile app** — 87% of online course consumption on this target market is desktop-first; native app deferred to v2
-- **Live classes / webinars** — adds WebRTC complexity out of scope for the build window
-- **Multi-currency pricing** — USD-only for v1 to avoid Stripe tax table complexity
-- **Affiliate / referral system** — high value, deferred to reduce launch scope
-- **DRM (Widevine/FairPlay)** — Mux signed URLs provide sufficient protection for indie educator threat model; enterprise DRM deferred
+### Non-Goals
+* Custom Video Transcoding Pipeline (Deferred to Mux because building an HLS chunking pipeline from scratch introduces too much infrastructure overhead and point-of-failure risk).
+* Mobile Native App (Deferred to v2; responsive web design is sufficient since 80% of online learning occurs on desktop).
 
 ---
 
@@ -47,201 +32,102 @@ tags: ["Next.js", "PostgreSQL", "Stripe", "Mux", "TypeScript"]
 
 ### Tech Stack
 
-| Layer | Technology | Why This | Alternatives Rejected |
-|---|---|---|---|
-| **Framework** | Next.js 15 (App Router) | SSR for course discovery SEO; RSC reduces client JS bundle; single repo for API + UI | Remix (smaller ecosystem, fewer UI library integrations); plain React SPA (zero SSR, poor SEO for course pages) |
-| **Language** | TypeScript | End-to-end type safety from DB schema → API → UI via Prisma generated types | JavaScript (runtime type errors in payment flows are unacceptable) |
-| **Database** | PostgreSQL (Neon serverless) | ACID guarantees for enrollment + payment atomicity; JSONB for flexible lesson metadata | MongoDB (no multi-document ACID at the time of this project); PlanetScale (MySQL — weaker JSONB, no array types) |
-| **ORM** | Prisma | Type-safe queries auto-generated from schema; excellent migration tooling | Drizzle (less mature, smaller community); raw SQL (loses type safety) |
-| **Auth** | NextAuth.js v5 | Native Next.js App Router adapter; supports Credentials + OAuth; session stored in JWT | Clerk (paid, vendor lock-in); custom JWT (reinventing solved problems) |
-| **Video Storage** | Cloudflare R2 | S3-compatible API, zero egress fees vs AWS S3's $0.09/GB; 10 GB free tier | AWS S3 (egress costs add up fast for video); GCS (no free egress tier) |
-| **Video Processing** | Mux | Adaptive HLS transcoding, thumbnail generation, signed playback URLs, analytics — all managed | Self-hosted FFmpeg (ops burden: transcoding queue, storage management, HLS segmentation); Cloudinary (video pricing non-transparent) |
-| **Payments** | Stripe | Most reliable webhook delivery; Connect for instructor payouts; best TypeScript SDK | PayPal (poor webhook reliability, inferior DX); Lemonsqueezy (limited payout control) |
-| **Email** | Resend + React Email | React-based email templates; generous free tier (3K emails/month) | SendGrid (over-engineered for this scale); Nodemailer (no managed delivery) |
-| **Hosting** | Vercel | Zero-config Next.js deployment; Edge Functions for middleware; preview deployments per PR | Railway (less Next.js-native); Fly.io (requires Dockerfile maintenance) |
+| Layer | Technology | Why This Choice | What We Considered |
+|-------|------------|-----------------|--------------------|
+| **Frontend** | Next.js 16 (App Router) | Native support for React Server Components (RSC) and Edge middleware allows us to run authorization without hitting the origin server. | Single Page App (React/Vite) — rejected due to poor SEO for the course catalog and lack of native Edge middleware. |
+| **Backend** | Next.js API Routes | Keeps the codebase unified in a monorepo. Shared TypeScript types between client, server, and ORM. | Express/NestJS — rejected to avoid maintaining a separate deployment pipeline and duplicating domain models. |
+| **Database** | PostgreSQL (Neon) | ACID guarantees are non-negotiable for payment flows and enrollment. Neon's serverless pooling prevents connection exhaustion. | MongoDB — rejected due to lack of strict schema enforcement and weaker multi-document ACID transactions. |
+| **ORM** | Prisma 7 | Type safety and the `@prisma/adapter-pg` allows direct database connections in serverless environments. | Drizzle — considered for speed, but Prisma's schema migration and developer experience won out for a 2-week timeline. |
+| **Video Delivery** | Mux | Best-in-class API for HLS video processing and built-in support for cryptographically signed playback tokens. | AWS MediaConvert — rejected due to extreme complexity and lack of immediate streaming analytics. |
+| **Payments** | Stripe | Unmatched developer experience, reliable webhook delivery, and Connect support for future marketplace splits. | PayPal — rejected due to clunky API design and poorer developer experience. |
 
 ### Architecture Diagram
 
 ```mermaid
-flowchart TD
-    Student([Student Browser]) -->|HTTPS| CDN[Vercel Edge Network]
-    Instructor([Instructor Browser]) -->|HTTPS| CDN
-    CDN --> App[Next.js App Server\nVercel Serverless]
+graph TD
+    Client[Browser/Client]
+    Edge[Next.js Edge Middleware]
+    Server[Next.js Node Server]
+    DB[(Neon PostgreSQL)]
+    Stripe[Stripe API]
+    Mux[Mux Video API]
+    R2[(Cloudflare R2)]
 
-    App -->|Prisma| DB[(Neon PostgreSQL)]
-    App -->|Signed URL| R2[(Cloudflare R2\nRaw Video Storage)]
-    App -->|Create Upload| Mux[Mux Video API]
-    App -->|Checkout Session| Stripe[Stripe API]
+    Client -->|1. Request Route| Edge
+    Edge -->|Valid JWT| Server
+    Edge -.->|Invalid| Login[Redirect to Login]
+    
+    Server -->|Read/Write| DB
+    Server -->|Create Checkout| Stripe
+    Server -->|Sign JWT Token| Mux
+    Client -->|HLS Stream| Mux
+    
+    Stripe -->|Webhook| Server
+    Mux -->|Webhook| Server
 
-    Mux -->|asset.ready webhook| App
-    Stripe -->|payment_intent.succeeded| App
-    App -->|SMTP| Resend[Resend Email]
-
-    Student -->|HLS Stream| MuxDelivery[Mux CDN\nSigned HLS]
-    MuxDelivery -.->|Token verified| App
-
-    App -->|Auth Session| NextAuth[NextAuth.js\nJWT in HttpOnly Cookie]
-
-    subgraph "Error Boundaries"
-        App -->|Failed webhook| DLQ[(Webhook Retry\nStripe auto-retries 3×)]
-        App -->|Mux upload failed| UploadErr[Upload Status\nPolled by client]
-    end
+    style DB fill:#3366cc,stroke:#fff,stroke-width:2px,color:#fff
+    style Stripe fill:#635bff,stroke:#fff,stroke-width:2px,color:#fff
+    style Mux fill:#fb3b53,stroke:#fff,stroke-width:2px,color:#fff
 ```
 
 ---
 
 ## Key Features
 
-### Authentication & Authorization
+### 1. Edge-Optimized Authentication
+* **JWT over Database Sessions:** Implemented NextAuth v5 using the JWT strategy. By embedding the `role` and `id` directly inside the signed token, our `proxy.ts` (Next.js Edge middleware) can authorize requests in <5ms without a database roundtrip.
+* **Separation of Concerns:** Split `auth.config.ts` (Edge-compatible) from `auth.ts` (Node-compatible) to prevent the Edge runtime from crashing when attempting to load `bcryptjs` and native Prisma modules.
 
-- **JWT with HttpOnly cookies** via NextAuth.js v5. Access token is never exposed to `document.cookie`. Chose JWT over database sessions because Neon serverless has cold-start latency — a DB roundtrip on every authenticated request adds 80–120ms.
-- **Three roles**: `STUDENT`, `INSTRUCTOR`, `ADMIN`. Enforced in Next.js `middleware.ts` at the edge before the request reaches the server — an instructor cannot hit `/admin` even with a crafted JWT.
-- **OAuth (Google)** reduces sign-up friction. A user who signs up via Google and later tries email/password gets a clear error linking their accounts rather than creating a ghost duplicate.
+### 2. Payment & Enrollment Idempotency
+* **Webhook Handling:** Stripe webhooks are verified via signature, but more importantly, processed idempotently. 
+* **Database-Level Protection:** Instead of an application-level check, `stripePaymentIntentId` is a `@unique` constraint on the `Enrollment` table. Retried webhooks trigger a Prisma `P2002` error, which we catch and safely return a `200 OK`, eliminating duplicate records.
 
-### Video Upload Pipeline
-
-Instructors do **not** upload to our servers. They upload directly to Mux:
-
-1. `POST /api/upload/mux` — server creates a Mux Direct Upload URL (scoped to our account, one-time use, 1-hour expiry)
-2. Frontend uses `@mux/mux-uploader-react` — drag-and-drop with progress bar, chunked upload, auto-resume on network failure
-3. Mux transcodes to adaptive HLS (360p / 720p / 1080p based on source quality)
-4. `POST /api/webhooks/mux` fires on `video.asset.ready` — we save `mux_playback_id` to the lesson row
-
-**Why not presigned R2 → FFmpeg?** We prototyped this. FFmpeg transcoding on a serverless function hit the 60-second Vercel timeout for a 15-minute lecture video. Running a persistent transcoding worker adds ~$40/month infrastructure cost and significant ops burden for a v1. Mux charges $0.015/min stored + $0.05/GB delivered — for a demo with <100 hours of content this is under $5/month.
-
-### Paywall-Protected Streaming
-
-Paid lessons serve video via **Mux signed playback tokens**, not raw URLs:
-
-```ts
-// app/api/lessons/[id]/token/route.ts
-const token = await mux.jwt.signPlaybackId(lesson.muxPlaybackId, {
-  type: "video",
-  expiration: "12h",        // token expires — sharing URL is useless next day
-  params: { sub: userId },  // auditable: which user requested this token
-});
-```
-
-Free preview lessons use unsigned playback — no auth needed. This distinction is enforced server-side; the client never receives a signed token for a lesson in a course the user hasn't paid for.
-
-### Stripe Payment & Enrollment
-
-The enrollment flow is intentionally **two-phase with idempotency**:
-
-1. Student clicks "Enroll" → `POST /api/checkout` → creates Stripe Checkout Session → redirect to Stripe-hosted checkout (PCI scope: SAQ A, not SAQ D)
-2. On payment success, Stripe fires `payment_intent.succeeded` webhook
-3. Webhook handler checks idempotency: `SELECT 1 FROM enrollments WHERE stripe_payment_intent_id = ?`
-4. If not duplicate: atomic DB transaction — insert `Payment` + insert `Enrollment`
-5. Resend fires enrollment confirmation email
-
-**Why two-phase?** The alternative (trusting Stripe's redirect `success_url` callback) is unreliable — the student's browser can close before the redirect completes. Webhook delivery is guaranteed and retried by Stripe up to 3× with exponential backoff.
-
-### Progress Tracking
-
-Every lesson play event debounces to a `PATCH /api/progress` call every 30 seconds of watch time:
-
-```ts
-// Saves watchedSeconds, marks complete when >= 90% of duration
-await prisma.lessonProgress.upsert({
-  where: { userId_lessonId: { userId, lessonId } },
-  update: { watchedSeconds, completed: watchedSeconds >= lesson.duration * 0.9 },
-  create: { userId, lessonId, watchedSeconds, completed: false },
-});
-```
-
-Course completion (all lessons complete) triggers a background job via a Vercel Cron that generates and emails the PDF certificate.
-
-### Admin Dashboard
-
-Role-gated at middleware — `ADMIN` only. Key capabilities:
-- **User table**: paginated, searchable, role change, ban toggle
-- **Course approval queue**: courses start as `DRAFT`, instructors submit for `REVIEW`, admin publishes or rejects with feedback
-- **Revenue overview**: total platform earnings (platform takes 15% via Stripe application fee on Connect charges), per-instructor breakdown
-- **Audit log**: every admin action (ban, publish, refund) is appended to an `AuditLog` table with `actorId`, `action`, `targetId`, `timestamp`
+### 3. Secure Video Delivery
+* **Cryptographic Signing:** Instead of exposing raw `.mp4` files, Mux handles HLS streaming. Premium videos are locked behind signed JSON Web Tokens (`mux.jwt.signPlaybackId()`) generated on the server.
+* **Auditability:** The tokens are valid for only 12 hours and contain the `userId` in the `sub` claim, ensuring that if a token leaks, we know exactly which account compromised it.
 
 ---
 
 ## Flows and Diagrams
 
-### Happy Path — Course Purchase & First Lesson
-
+### Happy Path: Video Streaming Access
 ```mermaid
 sequenceDiagram
-    participant S as Student
-    participant UI as Next.js UI
-    participant API as API Routes
-    participant Stripe
-    participant DB as PostgreSQL
+    participant User
+    participant Frontend
+    participant API
     participant Mux
 
-    S->>UI: Click "Enroll — $49"
-    UI->>API: POST /api/checkout {courseId}
-    API->>Stripe: Create Checkout Session (application_fee: 15%)
-    Stripe-->>API: {sessionId, url}
-    API-->>UI: {checkoutUrl}
-    UI->>Stripe: Redirect to Stripe-hosted checkout
-    S->>Stripe: Enters card, confirms payment
-    Stripe-->>API: POST /webhooks/stripe (payment_intent.succeeded)
-    API->>DB: Check idempotency key
-    DB-->>API: Not found (first delivery)
-    API->>DB: BEGIN TX — INSERT payment + enrollment — COMMIT
-    API-->>Stripe: 200 OK
-    S->>UI: Redirect to /dashboard/courses
-    S->>UI: Click lesson → GET /api/lessons/[id]/token
-    API->>DB: Verify enrollment exists
-    API->>Mux: signPlaybackId(12h expiry)
-    Mux-->>API: signed token
-    API-->>UI: {token, playbackId}
-    UI->>Mux: Load player with signed URL
-    Mux-->>S: HLS stream (adaptive bitrate)
+    User->>Frontend: Clicks "Play Lesson"
+    Frontend->>API: GET /api/lessons/:id/token
+    API->>API: Verify Session & Enrollment
+    API->>Mux: Sign JWT with Asset ID & User ID
+    API-->>Frontend: Return Signed Token (12h expiry)
+    Frontend->>Mux: Request HLS Stream + Token
+    Mux-->>Frontend: Video Stream Starts
 ```
 
-### Error Path — Webhook Delivery Failure
-
+### Error Flow: Webhook Retry Idempotency
 ```mermaid
 sequenceDiagram
     participant Stripe
-    participant API as /api/webhooks/stripe
-    participant DB as PostgreSQL
-
-    Stripe->>API: POST payment_intent.succeeded
-    API->>API: Verify Stripe-Signature header
-    API->>DB: BEGIN TX — INSERT enrollment
-    DB-->>API: Connection timeout (Neon cold start)
-    API-->>Stripe: 500 Internal Server Error
-    Note over Stripe: Queues retry #1 (5 min)
-    Stripe->>API: Retry #1
-    API->>DB: Check idempotency key (stripe_payment_intent_id)
-    DB-->>API: Not found — proceed
-    API->>DB: INSERT payment + enrollment
-    DB-->>API: Success
-    API-->>Stripe: 200 OK
-    Note over API: Enrollment confirmed on retry
-```
-
-### Instructor Video Upload Flow
-
-```mermaid
-sequenceDiagram
-    participant I as Instructor
-    participant UI as Course Builder UI
-    participant API as Next.js API
-    participant Mux
+    participant API
     participant DB
 
-    I->>UI: Drag .mp4 onto lesson uploader
-    UI->>API: POST /api/upload/mux {lessonId}
-    API->>Mux: uploads.create({cors_origin, playback_policy: signed})
-    Mux-->>API: {uploadUrl, uploadId}
-    API->>DB: UPDATE lesson SET muxUploadId, status=PROCESSING
-    API-->>UI: {uploadUrl}
-    UI->>Mux: PUT video bytes directly (chunked, resumable)
-    Mux-->>UI: Upload progress events (0%→100%)
-    Mux->>API: POST /webhooks/mux (video.asset.ready)
-    API->>DB: UPDATE lesson SET muxPlaybackId, status=READY, duration
-    DB-->>API: OK
-    API-->>UI: (polled) lesson.status = READY
-    UI->>I: "Video live" — player preview appears
+    Stripe->>API: POST /webhooks/stripe (payment_intent.succeeded)
+    API->>API: Verify Signature
+    API->>DB: INSERT Enrollment (Intent ID: req_123)
+    DB-->>API: Success
+    API-->>Stripe: 200 OK (Timeout - Connection Dropped)
+    
+    Note over Stripe,API: Stripe thinks it failed, retries 1 hour later
+    
+    Stripe->>API: POST /webhooks/stripe (payment_intent.succeeded)
+    API->>API: Verify Signature
+    API->>DB: INSERT Enrollment (Intent ID: req_123)
+    DB-->>API: Error P2002 (Unique Constraint Violation)
+    Note over API: Catch error, recognize as duplicate
+    API-->>Stripe: 200 OK (Silently drop)
 ```
 
 ---
@@ -249,206 +135,70 @@ sequenceDiagram
 ## API and Data Design
 
 ### Key Endpoints
+```text
+# Courses -- Auth via JWT Middleware
+GET  /api/courses                 -- List published courses (public)
+POST /api/courses                 -- Create draft (Role: INSTRUCTOR)
 
-```
-# Auth (NextAuth handles /api/auth/* internally)
+# Webhooks -- Signature Verified, Idempotent
+POST /api/webhooks/stripe         -- Handles payment success & enrollment
+POST /api/webhooks/mux            -- Handles video asset readiness
 
-# Courses — public reads, instructor writes
-GET  /api/courses                  # List published courses (filter: category, price, level)
-GET  /api/courses/[slug]           # Course detail + free preview lessons
-POST /api/courses                  # Create course (INSTRUCTOR role)
-PATCH /api/courses/[id]            # Update course (owner or ADMIN only)
-POST /api/courses/[id]/publish     # Submit for admin review
-
-# Lessons
-POST /api/lessons                  # Create lesson (INSTRUCTOR)
-PATCH /api/lessons/[id]            # Update lesson title/order/isFree flag
-PATCH /api/progress                # Upsert watch progress (debounced 30s)
-
-# Video
-POST /api/upload/mux               # Get Mux direct upload URL
-GET  /api/lessons/[id]/token       # Get signed playback token (checks enrollment)
-
-# Payments
-POST /api/checkout                 # Create Stripe Checkout Session
-POST /api/webhooks/stripe          # Stripe webhook (no auth — signature verified)
-POST /api/webhooks/mux             # Mux webhook (verified via mux-signature header)
-
-# Admin (ADMIN role required via middleware)
-GET  /api/admin/users              # Paginated user list
-PATCH /api/admin/users/[id]        # Update role or ban status
-GET  /api/admin/courses            # Courses pending review
-PATCH /api/admin/courses/[id]/status  # Approve / reject
-GET  /api/admin/revenue            # Platform earnings summary
+# Student Interaction
+POST /api/progress                -- Upsert video progress (Composite Key constraint)
+GET  /api/lessons/:id/token       -- Generate Mux playback token (Requires Enrollment)
 ```
 
-### Database Schema (ERD)
-
+### Database ERD (Core Domain)
 ```mermaid
 erDiagram
     User ||--o{ Course : "instructs"
     User ||--o{ Enrollment : "has"
-    User ||--o{ Review : "writes"
-    User ||--o{ AuditLog : "performs"
-
-    Course ||--|{ Section : "contains"
+    Course ||--o{ Section : "contains"
+    Section ||--o{ Lesson : "contains"
     Course ||--o{ Enrollment : "has"
-    Course ||--o{ Review : "receives"
-    Course }o--|| Category : "belongs to"
-
-    Section ||--|{ Lesson : "contains"
-
-    Lesson ||--o{ LessonProgress : "tracked by"
-
-    Enrollment ||--o| Payment : "created via"
-
+    
     User {
         string id PK
-        string email
-        string name
-        enum role "STUDENT|INSTRUCTOR|ADMIN"
-        string avatar
-        datetime createdAt
+        string role "STUDENT, INSTRUCTOR"
     }
-
-    Course {
-        string id PK
-        string title
-        string slug
-        string description
-        decimal price
-        enum status "DRAFT|REVIEW|PUBLISHED|ARCHIVED"
-        string instructorId FK
-        string categoryId FK
-        string thumbnailUrl
-        enum level "BEGINNER|INTERMEDIATE|ADVANCED"
-    }
-
     Lesson {
-        string id PK
-        string title
-        string muxPlaybackId
-        string muxUploadId
-        enum videoStatus "PROCESSING|READY|ERROR"
-        int durationSeconds
-        int order
-        boolean isFree
-        string sectionId FK
+        string muxAssetId
+        string muxUploadId UK "Idempotency key"
     }
-
     Enrollment {
-        string id PK
-        string userId FK
-        string courseId FK
-        datetime enrolledAt
-        datetime completedAt
-        string stripePaymentIntentId
-    }
-
-    LessonProgress {
-        string userId FK
-        string lessonId FK
-        int watchedSeconds
-        boolean completed
-        datetime updatedAt
-    }
-
-    Payment {
-        string id PK
-        string userId FK
-        string courseId FK
-        string stripeSessionId
-        string stripePaymentIntentId
-        decimal amount
-        enum status "PENDING|SUCCEEDED|REFUNDED"
+        string stripePaymentIntentId UK "Idempotency key"
     }
 ```
-
-**Denormalization decision**: `Payment.amount` is stored at checkout time even though `Course.price` exists. Course prices can change. Storing the amount paid creates an immutable financial record and avoids a join on refund calculations. Consistency risk: course revenue reports must query `Payment.amount`, not `Course.price`.
-
-**Index decisions**:
-- `Enrollment(userId, courseId)` — unique index prevents double enrollment; enforced at DB level, not just app level
-- `LessonProgress(userId, lessonId)` — composite unique key; `upsert` is the primary access pattern
-- `Course(status, categoryId)` — covers the most common browse query: published courses by category
-- `Course(instructorId)` — instructor dashboard query
+**Normalization Decisions:** 
+We strictly normalized the `Lesson` and `Section` hierarchy to ensure video re-ordering is simple. However, we materialized `progressPercent` directly on the `Enrollment` table. While this introduces slight denormalization (as progress could theoretically be calculated by summing `LessonProgress` rows), calculating it on-the-fly for a dashboard showing 20 courses would cause severe N+1 query latency.
 
 ---
 
 ## Challenges and Solutions
 
-| # | Challenge | Why It Was Hard | Solution | Trade-off Accepted |
-|---|---|---|---|---|
-| **1** | Mux webhook arrived before DB lesson row was fully committed | Race condition: upload completes in ~2s, instructor's browser hasn't navigated away — the row might not exist yet when `video.asset.ready` fires | Webhook handler uses `upsert` with `muxUploadId` as unique key — creates a stub row if missing, updates it when lesson data is available | Lesson can briefly exist in DB without a title; UI guards against rendering incomplete lessons |
-| **2** | Stripe webhook delivering 3× on network blip, creating 3 enrollments | Webhook idempotency is opt-in — Stripe retries on non-2xx, but the response was 200 while the DB transaction was still in flight | Added `stripe_payment_intent_id` unique constraint on `enrollments` table. First insert wins; subsequent retries hit a unique violation → caught → return 200 silently | None — this is the correct solution |
-| **3** | Neon serverless cold start adding 800ms to first request after idle | Neon pauses compute after 5 minutes idle. A student landing on a course page at 2am hit this | Added a 30-second Vercel Cron job (`/api/cron/keepalive`) that runs a `SELECT 1` to keep the connection warm during peak hours (6am–11pm) | Wastes ~$0.002/day in Neon compute during off-hours; acceptable cost |
-| **4** | Signed Mux tokens leaking via copy-paste of the URL | The signed token is a JWT in the URL — valid for 12h. A student could share it | Token includes `sub: userId` in payload. If we detect the same token being used from 2+ distinct IPs simultaneously, flag the session | Adds monitoring complexity; false positives possible on VPNs. DRM is the real solution, deferred to v2 |
-| **5** | Course completion percentage calculation on every lesson page load | Naive approach: `SELECT COUNT(*) FROM lesson_progress WHERE completed=true` joined with total lessons — O(n) on every render | Materialized `progressPercent` column on `Enrollment`, updated by a trigger on `LessonProgress` upsert | Slightly stale (within 1 upsert cycle); acceptable because progress bar updates on the next interaction |
-| **6** | Role-based middleware blocking API routes inconsistently | Next.js App Router middleware runs on the Edge runtime — Prisma client is not available | Middleware reads role from the JWT payload only (no DB call). Role is embedded at login time and refresh time | If an admin revokes a user's instructor role, they retain it until their JWT expires (15-minute access token) |
+| Challenge | Why It Was Hard | Solution | Trade-off |
+|-----------|-----------------|----------|-----------|
+| **Ghost Enrollments via Webhook Retries** | Stripe webhook timeouts caused duplicate database inserts, skewing revenue metrics. | Pushed idempotency to the DB layer via a `@unique` constraint on `stripePaymentIntentId`. | Requires careful error catching in the API to prevent returning 500s to Stripe for duplicate webhook payloads. |
+| **Next.js Edge Middleware Crashing** | The Edge runtime lacks Node.js `crypto`, crashing immediately when importing `bcryptjs` via the NextAuth config. | Split the auth config into `auth.config.ts` (Edge) and `auth.ts` (Node). | Adds slight architectural complexity; developers must remember which auth file to import depending on the runtime. |
+| **Video Piracy & Hotlinking** | Direct `.mp4` URLs allow users to distribute premium content freely. | Implemented Mux HLS streaming with 12-hour signed JWTs scoped to the user ID. | Users cannot download videos for offline viewing; relies heavily on Mux uptime. |
 
 ---
 
 ## Best Practices
 
-### Security
-
-- **CSRF**: Next.js App Router Server Actions have built-in CSRF protection via `SameSite=Lax` cookies. API routes that mutate state require `Authorization` header check in addition to cookie session.
-- **Input validation**: Every `POST`/`PATCH` API route validates with **Zod schemas** before touching Prisma. An invalid `courseId` returns `400` with a structured error — never reaches the DB.
-- **Stripe webhook signature**: Every webhook handler verifies `stripe.webhooks.constructEvent(body, sig, secret)`. A missing or invalid signature returns `400` immediately.
-- **Mux webhook verification**: Mux-Signature header verified with `mux.webhooks.verifySignature()`.
-- **Rate limiting**: Auth endpoints (`/api/auth/signin`) rate-limited to 10 requests/minute per IP via Vercel Edge middleware using an in-memory sliding window.
-- **SQL injection**: Impossible via Prisma's parameterized queries. Raw SQL (`$queryRaw`) is only used in one place (progress aggregation) and uses tagged template literals.
-
-### Performance
-
-- **RSC (React Server Components)**: Course catalog, lesson lists, and instructor dashboards are Server Components — zero JS hydration cost, HTML streamed from the edge.
-- **Image optimization**: Course thumbnails served via `next/image` with automatic WebP conversion and CDN caching. Mux auto-generates thumbnails eliminating manual upload.
-- **Database indexes**: `EXPLAIN ANALYZE` run on the 5 highest-frequency queries. The course browse query (`WHERE status='PUBLISHED' AND categoryId=?`) uses a covering index — zero seq scan.
-- **Debounced progress writes**: Lesson progress POSTs debounced to every 30 seconds, not on every `timeupdate` event — reduces DB writes from ~3600/hour to ~120/hour per viewer.
-
-### Observability
-
-- **Structured logging**: Every API route logs `{method, path, userId, durationMs, status}` as JSON. Vercel captures these in the function log.
-- **Error tracking**: Sentry configured with source maps uploaded at build time — stack traces in production point to TypeScript source, not compiled JS.
-- **Stripe Dashboard**: Webhook delivery success rate monitored directly in Stripe. Alerts on >1% failure rate.
-- **Mux Analytics**: Mux provides built-in video analytics (play rate, rebuffer ratio, bitrate quality) — no custom instrumentation needed for video.
-
-### Developer Experience
-
-- **TypeScript strict mode** (`"strict": true`) — no implicit `any`, no unchecked index access
-- **Prisma type generation** on every schema change — DB model types flow into API handlers and React components automatically
-- **ESLint + Prettier** with pre-commit hooks via Husky — broken code cannot reach `main`
-- **GitHub Actions CI**: Type-check → lint → build on every PR. Vercel preview URL posted as PR comment.
+* **Security:** Zod schemas validate 100% of incoming API payloads. `bcryptjs` (cost factor 12) secures credentials. Mux tokens are cryptographically signed.
+* **Performance:** Vercel Edge middleware handles route protection in <5ms. The Prisma client is initialized as a singleton to prevent connection pool exhaustion during hot reloads.
+* **Developer Experience:** TypeScript `strict` mode is enforced. NextAuth module augmentation (`types/next-auth.d.ts`) provides full intellisense for custom session properties like `user.role`.
+* **Observability:** Centralized immutable `AuditLog` table tracks all destructive actions (bans, refunds, course deletions). 
 
 ---
 
 ## Conclusion
 
-### Outcomes and Metrics
+**Learnings:**
+If I were building this for a team of 10+ engineers, I would introduce a message broker (like RabbitMQ or Redis Pub/Sub) for the webhooks instead of handling them synchronously in the API route. While the database constraint solves the data integrity issue, decoupling the webhook ingestion from the database write would dramatically improve resilience against database downtime.
 
-| Metric | Result |
-|---|---|
-| Video upload → playback | ~45 seconds (Mux transcodes 1080p 10-min lecture in ~35s) |
-| Stripe webhook → enrollment | < 2 seconds end-to-end |
-| Lighthouse Performance (course page) | 94/100 (SSR + RSC, no client hydration for catalog) |
-| Lighthouse SEO (course detail) | 100/100 |
-| DB query p95 (browse page) | 18ms (indexed category + status filter) |
-| Webhook idempotency failures | 0 duplicate enrollments in 500 simulated retries |
-
-### What I Would Do Differently
-
-1. **Monorepo from day 1**: Email templates, Prisma schema, and shared Zod validators ended up copy-pasted between files. Turborepo with shared `packages/` would eliminate this drift.
-2. **Feature flags before launch**: Deploying the course approval workflow while the admin dashboard was still WIP required coordinated deploys. A simple `NEXT_PUBLIC_FEATURE_ADMIN_APPROVAL=false` env flag would have decoupled deployment from release.
-3. **Event sourcing for enrollment**: Storing only the current enrollment state makes refund auditing hard. An append-only `EnrollmentEvent` table (`ENROLLED`, `REFUNDED`, `RE-ENROLLED`) would make the history queryable without joining `AuditLog`.
-4. **Load test before launch**: I load-tested with k6 after building, not before. Discovered Neon cold-start under concurrent load only then. Designing with "assume 5-minute idle cold start" from day 1 would have changed the caching strategy.
-
-### Next Steps
-
-1. **Stripe Connect onboarding** — Instructor payouts currently manual. Stripe Connect Express (OAuth flow) would automate 80% of the payout workflow in ~2 days of work.
-2. **Course Q&A / Discussion** — Per-lesson threaded comments. The data model is ready (`Comment` table stubbed in schema). UI work is the blocker.
-3. **Certificate PDF** — Completion detection is built; the PDF generator (`@react-pdf/renderer`) is stubbed. 1 day of work.
-4. **Subtitle upload** — Mux supports `.vtt` sidecar files. Instructors should be able to upload captions. Accessibility requirement for any commercial launch.
-5. **Mobile PWA** — The student-facing `/learn` route is responsive. A `manifest.json` + service worker for offline lesson notes is a 1-day win before a native app investment.
-
----
-
-*Built as part of the DevWeekends Full-Stack Engineering Fellowship, June 2026.*
+**Next Steps:**
+1. **Persistent Notifications:** Hook up the UI to the newly designed `Notification` schema to alert users of course updates.
+2. **Offline Playback:** Implement a secure way to cache video chunks in the browser for offline viewing without exposing raw files.

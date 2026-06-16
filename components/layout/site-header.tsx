@@ -1,0 +1,72 @@
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import { NotificationBell } from "./notification-bell";
+import { getNotifications } from "@/lib/actions/notifications";
+
+export async function SiteHeader() {
+  const session = await auth();
+  const notifications = session?.user ? await getNotifications() : [];
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-[#15110F]"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <span className="font-semibold text-lg tracking-tight">Learny</span>
+        </div>
+
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-foreground/80">
+          <Link href="/courses" className="hover:text-foreground transition-colors">Course Catalog</Link>
+          
+          {session?.user ? (
+            <>
+              {session.user.role === "ADMIN" && (
+                <Link href="/admin" className="hover:text-foreground font-semibold text-primary transition-colors">Admin Dashboard</Link>
+              )}
+              {(session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN") && (
+                <Link href="/instructor" className="hover:text-foreground font-semibold text-primary transition-colors">Instructor Studio</Link>
+              )}
+            </>
+          ) : (
+            <>
+              <Link href="/register?role=instructor" className="hover:text-foreground transition-colors">Teach on Learny</Link>
+            </>
+          )}
+        </nav>
+
+        <div className="flex items-center gap-4">
+          {session?.user ? (
+            <div className="flex items-center gap-2">
+              <NotificationBell initialNotifications={notifications} />
+              {session.user.role === "ADMIN" && (
+                <Link href="/admin" className={buttonVariants({ variant: "outline" })}>
+                  Admin
+                </Link>
+              )}
+              {(session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN") && (
+                <Link href="/instructor" className={buttonVariants({ variant: "outline" })}>
+                  Instructor
+                </Link>
+              )}
+              <Link href="/dashboard" className={buttonVariants({ variant: "default" })}>
+                Dashboard
+              </Link>
+            </div>
+          ) : (
+            <>
+              <Link href="/login" className={`${buttonVariants({ variant: "ghost" })} hidden sm:inline-flex`}>
+                Sign In
+              </Link>
+              <Link href="/register" className={buttonVariants({ variant: "default" })}>
+                Get Started Free
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
