@@ -4,13 +4,20 @@ import { useState } from "react";
 import { PlusCircle, MoreVertical, FileVideo, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createSection, createLesson } from "@/lib/actions/curriculum";
+import { createSection, createLesson, deleteLesson } from "@/lib/actions/curriculum";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { VideoUploader } from "@/components/course/video-uploader";
 
 type Lesson = {
   id: string;
   title: string;
   videoStatus: string;
+  muxUploadId?: string | null;
 };
 
 type Section = {
@@ -109,7 +116,7 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {(lesson.videoStatus === 'PENDING' || lesson.videoStatus === 'PROCESSING') && (
+                          {(!lesson.muxUploadId || lesson.videoStatus === 'PENDING') && (
                             <Button 
                               size="sm" 
                               variant="secondary" 
@@ -120,14 +127,31 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
                               {uploadingTo === lesson.id ? 'Cancel' : 'Upload Video'}
                             </Button>
                           )}
-                          <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="inline-flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                              <MoreVertical className="w-4 h-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => setUploadingTo(lesson.id)}>
+                                Replace Video
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                className="text-destructive focus:text-destructive"
+                                onClick={async () => {
+                                  if (confirm("Are you sure you want to delete this lesson?")) {
+                                    await deleteLesson(lesson.id);
+                                  }
+                                }}
+                              >
+                                Delete Lesson
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
 
                       {/* Video Uploader Dropzone */}
-                      {uploadingTo === lesson.id && (lesson.videoStatus === 'PENDING' || lesson.videoStatus === 'PROCESSING') && (
+                      {uploadingTo === lesson.id && (!lesson.muxUploadId || lesson.videoStatus === 'PENDING') && (
                         <div className="mt-4 border-t border-border pt-4">
                           <VideoUploader 
                             lessonId={lesson.id} 

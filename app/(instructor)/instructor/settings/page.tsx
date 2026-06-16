@@ -1,7 +1,47 @@
+"use client";
+
 import { Save, Wallet, Bell, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { revokeInstructorStatus } from "@/lib/actions/settings";
+import { useState } from "react";
 
 export default function SettingsPage() {
+  const [isRevoking, setIsRevoking] = useState(false);
+  const [notifications, setNotifications] = useState({
+    enrollment: true,
+    review: true,
+    approval: true
+  });
+
+  const handleConnectStripe = () => {
+    toast.info("Stripe Connect Coming Soon", {
+      description: "Once production API keys are configured, this will redirect to Stripe's onboarding flow."
+    });
+  };
+
+  const handleRevoke = async () => {
+    if (!confirm("Are you absolutely sure? This will unpublish all your courses and return your account to a standard student role. This action cannot be undone.")) {
+      return;
+    }
+
+    setIsRevoking(true);
+    const result = await revokeInstructorStatus();
+    
+    if (result?.error) {
+      toast.error(result.error);
+      setIsRevoking(false);
+    }
+    // If successful, the action will redirect the user.
+  };
+
+  const toggleNotification = (key: keyof typeof notifications) => {
+    setNotifications(prev => ({ ...prev, [key]: !prev[key] }));
+    toast.success("Preferences updated", {
+      description: "Your notification settings have been saved."
+    });
+  };
+
   return (
     <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
       <div>
@@ -30,7 +70,7 @@ export default function SettingsPage() {
                   <p className="text-xs text-muted-foreground">Not connected</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm">Connect Account</Button>
+              <Button onClick={handleConnectStripe} variant="outline" size="sm">Connect Account</Button>
             </div>
           </div>
         </div>
@@ -47,14 +87,24 @@ export default function SettingsPage() {
             </div>
           </div>
           <div className="p-6 bg-muted/20 space-y-4">
-            {["New course enrollment", "Course review posted", "Course approved by Admin"].map((item, i) => (
-              <label key={i} className="flex items-center justify-between cursor-pointer p-4 border border-border rounded-lg bg-background hover:bg-muted/50 transition-colors">
-                <span className="text-sm font-medium">{item}</span>
-                <div className="w-10 h-5 bg-primary/20 rounded-full relative">
-                  <div className="w-4 h-4 bg-primary rounded-full absolute top-0.5 right-0.5 shadow-sm"></div>
-                </div>
-              </label>
-            ))}
+            <label className="flex items-center justify-between cursor-pointer p-4 border border-border rounded-lg bg-background hover:bg-muted/50 transition-colors" onClick={() => toggleNotification('enrollment')}>
+              <span className="text-sm font-medium">New course enrollment</span>
+              <div className={`w-10 h-5 rounded-full relative transition-colors ${notifications.enrollment ? 'bg-primary' : 'bg-muted-foreground/30'}`}>
+                <div className={`w-4 h-4 bg-background rounded-full absolute top-0.5 shadow-sm transition-transform ${notifications.enrollment ? 'right-0.5' : 'left-0.5'}`}></div>
+              </div>
+            </label>
+            <label className="flex items-center justify-between cursor-pointer p-4 border border-border rounded-lg bg-background hover:bg-muted/50 transition-colors" onClick={() => toggleNotification('review')}>
+              <span className="text-sm font-medium">Course review posted</span>
+              <div className={`w-10 h-5 rounded-full relative transition-colors ${notifications.review ? 'bg-primary' : 'bg-muted-foreground/30'}`}>
+                <div className={`w-4 h-4 bg-background rounded-full absolute top-0.5 shadow-sm transition-transform ${notifications.review ? 'right-0.5' : 'left-0.5'}`}></div>
+              </div>
+            </label>
+            <label className="flex items-center justify-between cursor-pointer p-4 border border-border rounded-lg bg-background hover:bg-muted/50 transition-colors" onClick={() => toggleNotification('approval')}>
+              <span className="text-sm font-medium">Course approved by Admin</span>
+              <div className={`w-10 h-5 rounded-full relative transition-colors ${notifications.approval ? 'bg-primary' : 'bg-muted-foreground/30'}`}>
+                <div className={`w-4 h-4 bg-background rounded-full absolute top-0.5 shadow-sm transition-transform ${notifications.approval ? 'right-0.5' : 'left-0.5'}`}></div>
+              </div>
+            </label>
           </div>
         </div>
 
@@ -74,7 +124,9 @@ export default function SettingsPage() {
               <p className="font-medium text-sm">Revoke Instructor Status</p>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm">This will unpublish all your courses and return your account to a standard student role.</p>
             </div>
-            <Button variant="destructive">Revoke Status</Button>
+            <Button onClick={handleRevoke} disabled={isRevoking} variant="destructive">
+              {isRevoking ? "Revoking..." : "Revoke Status"}
+            </Button>
           </div>
         </div>
       </div>

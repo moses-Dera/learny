@@ -80,3 +80,31 @@ export async function createLesson(sectionId: string, title: string) {
     return { error: "Failed to create lesson" };
   }
 }
+
+export async function deleteLesson(lessonId: string) {
+  const session = await auth();
+  if (!session?.user?.id || (session.user.role !== "INSTRUCTOR" && session.user.role !== "ADMIN")) {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId },
+      include: { section: { include: { course: true } } },
+    });
+
+    if (!lesson || lesson.section.course.instructorId !== session.user.id) {
+      return { error: "Lesson not found or unauthorized" };
+    }
+
+    await prisma.lesson.delete({
+      where: { id: lessonId },
+    });
+
+    revalidatePath(`/instructor/courses/${lesson.section.courseId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("[DELETE_LESSON]", error);
+    return { error: "Failed to delete lesson" };
+  }
+}
