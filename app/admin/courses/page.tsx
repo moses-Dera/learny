@@ -18,7 +18,7 @@ export default async function AdminCoursesReviewPage() {
         select: { name: true, email: true }
       },
       _count: {
-        select: { sections: true, lessons: true }
+        select: { sections: true }
       }
     },
     orderBy: { updatedAt: "asc" }
@@ -66,8 +66,7 @@ export default async function AdminCoursesReviewPage() {
               </CardHeader>
               <CardContent>
                 <div className="mb-4 text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">{course._count.sections}</span> Sections,{" "}
-                  <span className="font-medium text-foreground">{course._count.lessons}</span> Lessons
+                  <span className="font-medium text-foreground">{course._count.sections}</span> Sections
                   {" • "}
                   Price: <span className="font-medium text-foreground">${Number(course.price).toFixed(2)}</span>
                 </div>

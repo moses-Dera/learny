@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     }
 
     // Free course -> enroll immediately
-    if (course.price === 0 || !course.price) {
+    if (Number(course.price) === 0 || !course.price) {
       await prisma.enrollment.create({
         data: {
           userId: session.user.id,
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
             description: course.description || undefined,
             images: course.thumbnailUrl ? [course.thumbnailUrl] : [],
           },
-          unit_amount: Math.round(course.price * 100), // Convert to cents
+          unit_amount: Math.round(Number(course.price) * 100), // Convert to cents
         }
       }
     ];

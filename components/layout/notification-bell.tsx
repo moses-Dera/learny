@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState } from "react";
 import { Bell } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -104,6 +106,12 @@ export function NotificationBell({ initialNotifications }: { initialNotification
             </div>
           )}
         </ScrollArea>
+        <DropdownMenuSeparator />
+        <div className="p-2">
+          <Button variant="outline" className="w-full text-xs h-8" asChild>
+            <Link href="/notifications">View all notifications</Link>
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

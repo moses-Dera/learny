@@ -41,6 +41,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 Instructor Studio
               </Link>
             )}
+            <Link href="/dashboard/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+              <Settings className="w-4 h-4" />
+              Settings
+            </Link>
           </nav>
         </div>
 

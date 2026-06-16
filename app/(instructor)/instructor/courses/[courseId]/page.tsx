@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { PlusCircle, ArrowLeft, MoreVertical, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { CurriculumBuilder } from "@/components/course/curriculum-builder";
@@ -65,11 +65,9 @@ export default async function CourseManagementPage({
           <p className="text-muted-foreground mt-1 line-clamp-1">{course.description}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" asChild>
-            <Link href={`/instructor/courses/${course.id}/edit`}>
-              Edit Details
-            </Link>
-          </Button>
+          <Link href={`/instructor/courses/${course.id}/edit`} className={buttonVariants({ variant: "outline" })}>
+            Edit Details
+          </Link>
           <form action={async () => {
             "use server";
             const { publishCourseAction } = await import("@/lib/actions/courses");
@@ -82,6 +80,7 @@ export default async function CourseManagementPage({
               {course.status === "PUBLISHED" ? "Unpublish Course" : "Publish Course"}
             </Button>
           </form>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">

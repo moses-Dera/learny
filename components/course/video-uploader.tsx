@@ -62,7 +62,6 @@ export function VideoUploader({ lessonId, onUploadSuccess }: VideoUploaderProps)
           endpoint={getUploadUrl}
           onSuccess={handleUploadSuccess}
           className="w-full rounded-md mux-uploader-theme"
-          theme="system"
         />
         <MuxUploaderStatus 
           className="mt-2 text-sm font-medium text-center mux-uploader-theme"

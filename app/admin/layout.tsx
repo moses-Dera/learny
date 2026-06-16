@@ -40,14 +40,14 @@ export default async function AdminLayout({
           </Link>
           <Link
             href="/admin/users"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground opacity-50 cursor-not-allowed transition-colors"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
           >
             <Users className="h-4 w-4" />
             Users
           </Link>
           <Link
             href="/admin/settings"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground opacity-50 cursor-not-allowed transition-colors"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
           >
             <Settings className="h-4 w-4" />
             Settings

@@ -14,6 +14,7 @@ const PROTECTED_ROUTES = {
   "/dashboard": ["STUDENT", "INSTRUCTOR", "ADMIN"],
   "/instructor": ["INSTRUCTOR", "ADMIN"],
   "/admin": ["ADMIN"],
+  "/notifications": ["STUDENT", "INSTRUCTOR", "ADMIN"],
 } as const;
 
 const AUTH_ROUTES = ["/login", "/register"];
