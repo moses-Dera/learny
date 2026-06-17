@@ -32,7 +32,7 @@ export default async function DashboardPage() {
     orderBy: { enrolledAt: "desc" }
   });
 
-  const coursesWithProgress = enrollments.map(enrollment => {
+  const coursesWithProgress = enrollments.map((enrollment: any) => {
     const course = enrollment.course;
     const totalLessons = course.sections.flatMap(s => s.lessons).length;
     const completedLessons = course.sections.flatMap(s => s.lessons).filter(l => l.progress[0]?.completed).length;
