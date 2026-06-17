@@ -66,9 +66,9 @@ export default async function AnalyticsPage() {
     },
   });
 
-  const totalEnrollments = courses.reduce((acc, curr) => acc + curr._count.enrollments, 0);
+  const totalEnrollments = courses.reduce((acc: number, curr: { _count: { enrollments: number } }) => acc + curr._count.enrollments, 0);
 
-  const topCoursesData = courses.slice(0, 5).map(course => ({
+  const topCoursesData = courses.slice(0, 5).map((course: { title: string, _count: { enrollments: number } }) => ({
     title: course.title.length > 20 ? course.title.substring(0, 20) + "..." : course.title,
     students: course._count.enrollments,
   }));
