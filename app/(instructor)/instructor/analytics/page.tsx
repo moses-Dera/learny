@@ -25,7 +25,7 @@ export default async function AnalyticsPage() {
   });
 
   // Calculate total revenue
-  const totalRevenue = payments.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const totalRevenue = payments.reduce((acc: number, curr: any) => acc + Number(curr.amount), 0);
 
   // Group revenue by month for the chart (last 6 months)
   const monthlyRevenueMap: Record<string, number> = {};
