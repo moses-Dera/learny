@@ -3,7 +3,7 @@
 import MuxUploader, { MuxUploaderStatus } from "@mux/mux-uploader-react";
 import { useState } from "react";
 import { updateLessonUploadId } from "@/lib/actions/lessons"; // We will create this next
-import { VideoStatus } from "@prisma/client";
+
 
 interface VideoUploaderProps {
   lessonId: string;
