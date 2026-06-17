@@ -1,7 +1,11 @@
 // GET /api/cron/keepalive
-// Keeps Neon serverless DB warm during peak hours (6am–11pm).
-// Neon pauses compute after 5 minutes idle — cold start adds ~800ms.
+// Keeps serverless databases (like Neon or Supabase) warm during peak hours (6am–11pm).
+// Serverless DBs pause compute after 5 minutes idle — a cold start adds ~800ms of delay.
 // Scheduled in vercel.json: "*/30 * 6-23 * *"
+// 
+// NOTE: If you are using a "normal" provisioned database (like AWS RDS, DigitalOcean, 
+// or a standard VPS) that does not auto-pause, YOU DO NOT NEED THIS. 
+// You can safely delete this file and remove the cron block from vercel.json.
 
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
