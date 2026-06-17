@@ -115,11 +115,11 @@ export default async function CourseDetailPage({
               <Link href={`/courses/${course.id}/lessons/${course.sections[0]?.lessons[0]?.id || ''}`} className="block w-full">
                 <Button className="w-full h-12 text-lg">Continue Learning</Button>
               </Link>
-            ) : session?.user?.id === course.userId ? (
+            ) : session?.user?.id === course.instructorId ? (
               <Link href={`/instructor/courses/${course.id}`} className="block w-full">
                 <Button className="w-full h-12 text-lg" variant="outline">Edit Course</Button>
               </Link>
-            ) : !course.isPublished ? (
+            ) : course.status !== "PUBLISHED" ? (
               <Button className="w-full h-12 text-lg" disabled>Coming Soon</Button>
             ) : (
               (() => {

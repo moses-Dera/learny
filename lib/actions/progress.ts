@@ -32,12 +32,12 @@ export async function completeLesson(lessonId: string) {
         }
       },
       update: {
-        isCompleted: true,
+        completed: true,
       },
       create: {
         userId: session.user.id,
         lessonId: lessonId,
-        isCompleted: true,
+        completed: true,
       }
     });
 
