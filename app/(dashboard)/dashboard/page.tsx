@@ -34,8 +34,8 @@ export default async function DashboardPage() {
 
   const coursesWithProgress = enrollments.map((enrollment: any) => {
     const course = enrollment.course;
-    const totalLessons = course.sections.flatMap(s => s.lessons).length;
-    const completedLessons = course.sections.flatMap(s => s.lessons).filter(l => l.progress[0]?.completed).length;
+    const totalLessons = course.sections.flatMap((s: any) => s.lessons).length;
+    const completedLessons = course.sections.flatMap((s: any) => s.lessons).filter((l: any) => l.progress[0]?.completed).length;
     const progressPercent = totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100);
     
     // Find the first lesson to resume from (first uncompleted)
