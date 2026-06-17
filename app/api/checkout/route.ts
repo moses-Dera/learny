@@ -80,7 +80,7 @@ export async function POST(req: Request) {
       }
     ];
 
-    let payment_intent_data = undefined;
+    let payment_intent_data: any = undefined;
     if (course.instructor.stripeAccountId && course.instructor.stripeAccountSetupComplete) {
       const application_fee_amount = Math.round(unitAmount * 0.15); // 15% platform fee
       payment_intent_data = {
