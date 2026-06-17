@@ -38,7 +38,7 @@ export default async function AnalyticsPage() {
     monthlyRevenueMap[`${monthNames[d.getMonth()]} ${d.getFullYear()}`] = 0;
   }
 
-  payments.forEach((payment) => {
+  payments.forEach((payment: any) => {
     const monthYear = `${monthNames[payment.createdAt.getMonth()]} ${payment.createdAt.getFullYear()}`;
     if (monthlyRevenueMap[monthYear] !== undefined) {
       monthlyRevenueMap[monthYear] += Number(payment.amount);
