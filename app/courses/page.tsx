@@ -24,8 +24,8 @@ export default async function CatalogPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {courses.map((course) => {
-            const totalLessons = course.sections.flatMap(s => s.lessons).length;
+          {courses.map((course: any) => {
+            const totalLessons = course.sections.flatMap((s: any) => s.lessons).length;
             
             return (
               <Link key={course.id} href={`/courses/${course.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors shadow-sm flex flex-col">

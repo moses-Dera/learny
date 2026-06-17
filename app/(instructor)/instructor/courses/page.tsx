@@ -65,7 +65,7 @@ export default async function InstructorCoursesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {courses.map((course) => (
+                {courses.map((course: any) => (
                   <tr key={course.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-6 py-4 font-medium text-foreground">{course.title}</td>
                     <td className="px-6 py-4">
@@ -78,7 +78,7 @@ export default async function InstructorCoursesPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">${course.price.toString()}</td>
-                    <td className="px-6 py-4">{course.sections.reduce((acc, section) => acc + section._count.lessons, 0)}</td>
+                    <td className="px-6 py-4">{course.sections.reduce((acc: number, section: any) => acc + section._count.lessons, 0)}</td>
                     <td className="px-6 py-4">{course._count.enrollments}</td>
                     <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
                       <Link href={`/instructor/courses/${course.id}`} className="inline-flex items-center justify-center size-8 rounded-md text-foreground hover:bg-muted transition-colors">

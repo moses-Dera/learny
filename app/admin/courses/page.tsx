@@ -45,7 +45,7 @@ export default async function AdminCoursesReviewPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {courses.map((course) => (
+          {courses.map((course: any) => (
             <Card key={course.id}>
               <CardHeader className="flex flex-row items-start justify-between pb-2">
                 <div>
