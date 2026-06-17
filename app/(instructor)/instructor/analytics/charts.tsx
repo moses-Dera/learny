@@ -44,7 +44,7 @@ export function RevenueChart({ data }: { data: { month: string; value: number }[
               border: '1px solid hsl(var(--border))', 
               boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
             }}
-            formatter={(value: number) => [`$${value}`, 'Revenue']}
+            formatter={(value: any) => [`$${value}`, 'Revenue']}
           />
           <Area 
             type="monotone" 
@@ -97,7 +97,7 @@ export function EnrollmentsChart({ data }: { data: { title: string; students: nu
               border: '1px solid hsl(var(--border))', 
               boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
             }}
-            formatter={(value: number) => [value, 'Enrollments']}
+            formatter={(value: any) => [value, 'Enrollments']}
           />
           <Bar dataKey="students" fill="var(--primary)" radius={[0, 4, 4, 0]} maxBarSize={30} />
         </BarChart>

@@ -40,7 +40,9 @@ export function NotificationBell({ initialNotifications }: { initialNotification
     await markAsRead(id);
     
     if (link) {
-      router.push(link);
+      // Strip legacy /dashboard prefix from old notifications
+      const sanitizedLink = link.startsWith("/dashboard") ? link.replace("/dashboard", "") : link;
+      router.push(sanitizedLink);
     }
   };
 
@@ -106,12 +108,6 @@ export function NotificationBell({ initialNotifications }: { initialNotification
             </div>
           )}
         </ScrollArea>
-        <DropdownMenuSeparator />
-        <div className="p-2">
-          <Button variant="outline" className="w-full text-xs h-8" asChild>
-            <Link href="/notifications">View all notifications</Link>
-          </Button>
-        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

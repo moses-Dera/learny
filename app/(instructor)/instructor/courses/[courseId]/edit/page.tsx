@@ -32,6 +32,10 @@ export default async function EditCoursePage({
     notFound();
   }
 
+  const categories = await prisma.category.findMany({
+    orderBy: { name: 'asc' }
+  });
+
   return (
     <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in duration-300">
       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
@@ -76,7 +80,7 @@ export default async function EditCoursePage({
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <label htmlFor="price" className="text-sm font-medium">Price (USD)</label>
               <div className="relative">
@@ -104,6 +108,23 @@ export default async function EditCoursePage({
                 <option value="BEGINNER">Beginner</option>
                 <option value="INTERMEDIATE">Intermediate</option>
                 <option value="ADVANCED">Advanced</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="categoryId" className="text-sm font-medium">Category</label>
+              <select 
+                id="categoryId" 
+                name="categoryId" 
+                defaultValue={course.categoryId || ""}
+                className="w-full flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="">Uncategorized</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

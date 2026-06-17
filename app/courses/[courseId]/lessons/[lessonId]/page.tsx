@@ -30,7 +30,7 @@ export default async function LessonPage({
     notFound();
   }
 
-  const isCompleted = lesson.progress[0]?.isCompleted || false;
+  const isCompleted = lesson.progress[0]?.completed || false;
 
   return (
     <div className="flex flex-col max-w-5xl mx-auto w-full p-4 lg:p-8 space-y-6 animate-in fade-in duration-300">

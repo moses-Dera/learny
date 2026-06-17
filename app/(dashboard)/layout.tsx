@@ -4,8 +4,12 @@ import Link from "next/link";
 import { LayoutDashboard, BookOpen, Settings, Video } from "lucide-react";
 import { SignOutButton } from "@/components/forms/signout-button";
 
+import { NotificationBell } from "@/components/layout/notification-bell";
+import { getNotifications } from "@/lib/actions/notifications";
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
+  const notifications = await getNotifications();
   if (!session?.user) {
     redirect("/login");
   }
@@ -58,6 +62,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <header className="h-16 flex items-center justify-between px-6 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
           <h1 className="text-xl font-semibold text-foreground truncate">Dashboard</h1>
           <div className="flex items-center gap-4 shrink-0">
+            <NotificationBell initialNotifications={notifications} />
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-sm font-medium text-foreground leading-none">{session.user.name}</span>

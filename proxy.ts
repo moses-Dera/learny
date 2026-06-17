@@ -51,6 +51,10 @@ export default auth(function proxy(req) {
   const userRole = session.user.role;
 
   if (!allowedRoles.includes(userRole as never)) {
+    if (matchedRoute === "/admin") {
+      // Stealth mode: silently render a 404 so non-admins cannot even guess this URL exists
+      return NextResponse.rewrite(new URL("/404", req.url));
+    }
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 

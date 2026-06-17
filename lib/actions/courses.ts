@@ -117,7 +117,7 @@ export async function publishCourseAction(courseId: string, isPublished: boolean
           userId: session.user.id,
           title: "Course Submitted for Review",
           message: `Your course "${course.title}" has been submitted and is pending admin approval.`,
-          link: `/dashboard/instructor/courses/${courseId}`
+          link: `/instructor/courses/${courseId}`
         }
       });
       // Also notify admins
@@ -147,7 +147,7 @@ export async function publishCourseAction(courseId: string, isPublished: boolean
           userId: session.user.id,
           title: "Course Unpublished",
           message: `Your course "${course.title}" is now hidden from the catalog and set to draft.`,
-          link: `/dashboard/instructor/courses/${courseId}`
+          link: `/instructor/courses/${courseId}`
         }
       });
     }
@@ -181,6 +181,7 @@ export async function updateCourseAction(courseId: string, formData: FormData) {
     description: formData.get("description") !== null ? formData.get("description") as string : undefined,
     price: formData.get("price") ? formData.get("price") : undefined,
     level: formData.get("level") ? formData.get("level") as string : undefined,
+    categoryId: formData.get("categoryId") ? formData.get("categoryId") as string : undefined,
   };
 
   const parsed = updateCourseSchema.safeParse(data);

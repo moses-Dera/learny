@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { VideoUploader } from "@/components/course/video-uploader";
 
+import { ConfirmModal } from "@/components/ui/confirm-modal";
+
 type Lesson = {
   id: string;
   title: string;
@@ -32,6 +34,7 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
   const [addingLessonTo, setAddingLessonTo] = useState<string | null>(null);
   const [newLessonTitle, setNewLessonTitle] = useState("");
   const [uploadingTo, setUploadingTo] = useState<string | null>(null);
+  const [lessonToDelete, setLessonToDelete] = useState<string | null>(null);
 
   const handleAddSection = async () => {
     if (!newSectionTitle.trim()) return;
@@ -48,14 +51,28 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">Course Curriculum</h2>
-        <Button onClick={() => setIsAddingSection(true)} size="sm" className="gap-1">
-          <PlusCircle className="w-4 h-4" />
-          Add Section
-        </Button>
-      </div>
+    <>
+      <ConfirmModal 
+        isOpen={!!lessonToDelete}
+        onClose={() => setLessonToDelete(null)}
+        onConfirm={async () => {
+          if (lessonToDelete) {
+            await deleteLesson(lessonToDelete);
+          }
+        }}
+        title="Delete Lesson"
+        description="Are you sure you want to delete this lesson? This will permanently remove the video and any progress students have made. This action cannot be undone."
+        confirmText="Yes, delete it"
+        isDestructive={true}
+      />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-foreground">Course Curriculum</h2>
+          <Button onClick={() => setIsAddingSection(true)} size="sm" className="gap-1">
+            <PlusCircle className="w-4 h-4" />
+            Add Section
+          </Button>
+        </div>
 
       {isAddingSection && (
         <div className="bg-card border border-border p-4 rounded-xl flex items-center gap-2">
@@ -137,11 +154,7 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 className="text-destructive focus:text-destructive"
-                                onClick={async () => {
-                                  if (confirm("Are you sure you want to delete this lesson?")) {
-                                    await deleteLesson(lesson.id);
-                                  }
-                                }}
+                                onClick={() => setLessonToDelete(lesson.id)}
                               >
                                 Delete Lesson
                               </DropdownMenuItem>
@@ -194,6 +207,7 @@ export function CurriculumBuilder({ courseId, initialSections }: { courseId: str
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

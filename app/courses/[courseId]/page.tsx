@@ -1,9 +1,10 @@
+
 import { prisma } from "@/lib/db";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Clock, BookOpen, BarChart } from "lucide-react";
+import { Clock, BookOpen, BarChart, PlayCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 
@@ -57,9 +58,15 @@ export default async function CourseDetailPage({
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-card border-b border-border py-12 md:py-20 px-6">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
+      <div className="bg-muted/30 border-b relative py-8 md:py-16 px-6">
+        <div className="max-w-5xl mx-auto">
+          <Link href="/courses" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Course Catalog
+          </Link>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">{course.title}</h1>
             <p className="text-lg text-muted-foreground">{course.description || "No description provided yet."}</p>
             
@@ -101,68 +108,86 @@ export default async function CourseDetailPage({
             </div>
 
             <div className="text-3xl font-bold text-foreground">
-              {course.price === 0 || !course.price ? "Free" : `$${course.price}`}
+              {course.price && course.price.toNumber() > 0 ? `$${course.price.toNumber()}` : "Free"}
             </div>
 
             {isEnrolled ? (
               <Link href={`/courses/${course.id}/lessons/${course.sections[0]?.lessons[0]?.id || ''}`} className="block w-full">
                 <Button className="w-full h-12 text-lg">Continue Learning</Button>
               </Link>
+            ) : session?.user?.id === course.userId ? (
+              <Link href={`/instructor/courses/${course.id}`} className="block w-full">
+                <Button className="w-full h-12 text-lg" variant="outline">Edit Course</Button>
+              </Link>
+            ) : !course.isPublished ? (
+              <Button className="w-full h-12 text-lg" disabled>Coming Soon</Button>
             ) : (
-              <form action={async () => {
-                "use server";
-                const userSession = await auth();
-                if (!userSession?.user?.id) redirect("/login");
+              (() => {
+                const courseId = course.id;
+                const courseTitle = course.title;
+                const courseDescription = course.description;
+                const courseThumbnailUrl = course.thumbnailUrl;
+                const priceNumber = course.price ? course.price.toNumber() : 0;
+                const firstLessonId = course.sections[0]?.lessons[0]?.id || '';
 
-                if (course.price === 0 || !course.price) {
-                  // Free Course -> Enroll Directly
-                  await prisma.enrollment.create({
-                    data: {
-                      userId: userSession.user.id,
-                      courseId: course.id,
-                    }
-                  });
-                  revalidatePath(`/courses/${course.id}`);
-                  redirect(`/courses/${course.id}/lessons/${course.sections[0]?.lessons[0]?.id || ''}`);
-                } else {
-                  // Paid Course -> Stripe Checkout
-                  const stripe = (await import("@/lib/stripe")).stripe;
-                  const env = (await import("@/lib/env")).env;
+                return (
+                  <form action={async () => {
+                    "use server";
+                    const userSession = await auth();
+                    if (!userSession?.user?.id) redirect("/login");
 
-                  const checkoutSession = await stripe.checkout.sessions.create({
-                    customer_email: userSession.user.email || undefined,
-                    line_items: [
-                      {
-                        quantity: 1,
-                        price_data: {
-                          currency: "usd",
-                          product_data: {
-                            name: course.title,
-                            description: course.description || undefined,
-                            images: course.thumbnailUrl ? [course.thumbnailUrl] : [],
-                          },
-                          unit_amount: Math.round(course.price * 100),
+                    if (priceNumber === 0) {
+                      // Free Course -> Enroll Directly
+                      await prisma.enrollment.create({
+                        data: {
+                          userId: userSession.user.id,
+                          courseId: courseId,
                         }
-                      }
-                    ],
-                    mode: "payment",
-                    success_url: `${env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?success=1`,
-                    cancel_url: `${env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?canceled=1`,
-                    metadata: {
-                      courseId: course.id,
-                      userId: userSession.user.id,
-                    }
-                  });
+                      });
+                      revalidatePath(`/courses/${courseId}`);
+                      redirect(`/courses/${courseId}/lessons/${firstLessonId}`);
+                    } else {
+                      // Paid Course -> Stripe Checkout
+                      const stripe = (await import("@/lib/stripe")).stripe;
+                      const env = (await import("@/lib/env")).env;
 
-                  if (checkoutSession.url) {
-                    redirect(checkoutSession.url);
-                  }
-                }
-              }}>
-                <Button className="w-full h-12 text-lg">Enroll Now</Button>
-              </form>
+                      const checkoutSession = await stripe.checkout.sessions.create({
+                        customer_email: userSession.user.email || undefined,
+                        line_items: [
+                          {
+                            quantity: 1,
+                            price_data: {
+                              currency: "usd",
+                              product_data: {
+                                name: courseTitle,
+                                description: courseDescription || undefined,
+                                images: courseThumbnailUrl ? [courseThumbnailUrl] : [],
+                              },
+                              unit_amount: Math.round(priceNumber * 100),
+                            }
+                          }
+                        ],
+                        mode: "payment",
+                        success_url: `${env.NEXT_PUBLIC_APP_URL}/courses/${courseId}?success=1`,
+                        cancel_url: `${env.NEXT_PUBLIC_APP_URL}/courses/${courseId}?canceled=1`,
+                        metadata: {
+                          courseId: courseId,
+                          userId: userSession.user.id,
+                        }
+                      });
+
+                      if (checkoutSession.url) {
+                        redirect(checkoutSession.url);
+                      }
+                    }
+                  }}>
+                    <Button className="w-full h-12 text-lg">Enroll Now</Button>
+                  </form>
+                );
+              })()
             )}
           </div>
+        </div>
         </div>
       </div>
 

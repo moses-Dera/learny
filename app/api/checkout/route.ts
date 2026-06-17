@@ -20,6 +20,7 @@ export async function POST(req: Request) {
 
     const course = await prisma.course.findUnique({
       where: { id: courseId, status: "PUBLISHED" },
+      include: { instructor: true }
     });
 
     if (!course) {
@@ -62,6 +63,8 @@ export async function POST(req: Request) {
     // If we had a stripeCustomerId on the user, we'd use it here. 
     // We'll let Stripe create one or just use customer_email.
 
+    const unitAmount = Math.round(Number(course.price) * 100);
+
     const line_items = [
       {
         quantity: 1,
@@ -72,10 +75,21 @@ export async function POST(req: Request) {
             description: course.description || undefined,
             images: course.thumbnailUrl ? [course.thumbnailUrl] : [],
           },
-          unit_amount: Math.round(Number(course.price) * 100), // Convert to cents
+          unit_amount: unitAmount, // Convert to cents
         }
       }
     ];
+
+    let payment_intent_data = undefined;
+    if (course.instructor.stripeAccountId && course.instructor.stripeAccountSetupComplete) {
+      const application_fee_amount = Math.round(unitAmount * 0.15); // 15% platform fee
+      payment_intent_data = {
+        application_fee_amount,
+        transfer_data: {
+          destination: course.instructor.stripeAccountId,
+        },
+      };
+    }
 
     const checkoutSession = await stripe.checkout.sessions.create({
       customer_email: session.user.email,
@@ -83,6 +97,7 @@ export async function POST(req: Request) {
       mode: "payment",
       success_url: `${env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?success=1`,
       cancel_url: `${env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?canceled=1`,
+      payment_intent_data,
       metadata: {
         courseId: course.id,
         userId: session.user.id,

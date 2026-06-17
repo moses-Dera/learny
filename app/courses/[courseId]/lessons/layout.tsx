@@ -30,7 +30,7 @@ export default async function CourseLayout({
 
   // If not enrolled and not an instructor, deny access
   if (!enrollment && !isInstructor) {
-    redirect(`/dashboard/courses`); // In a real app, redirect to the public course sales page
+    redirect(`/courses/${courseId}`); 
   }
 
   const course = await prisma.course.findUnique({
@@ -58,7 +58,7 @@ export default async function CourseLayout({
   const totalLessons = course.sections.flatMap((s) => s.lessons).length;
   const completedLessons = course.sections
     .flatMap((s) => s.lessons)
-    .filter((l) => l.progress[0]?.isCompleted).length;
+    .filter((l) => l.progress[0]?.completed).length;
   const progressPercent = totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100);
 
   return (
@@ -100,7 +100,7 @@ export default async function CourseLayout({
               </h3>
               <div className="space-y-1">
                 {section.lessons.map((lesson) => {
-                  const isCompleted = lesson.progress[0]?.isCompleted;
+                  const isCompleted = lesson.progress[0]?.completed;
                   return (
                     <Link
                       key={lesson.id}
