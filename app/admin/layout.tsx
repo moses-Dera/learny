@@ -16,9 +16,9 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
+    <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className="hidden w-64 flex-col border-r bg-muted/20 md:flex">
+      <aside className="hidden w-64 flex-col border-r bg-muted/20 md:flex md:sticky md:top-0 md:h-screen">
         <div className="flex h-14 items-center border-b px-4">
           <ShieldCheck className="mr-2 h-5 w-5 text-primary" />
           <span className="font-semibold tracking-tight">Admin Console</span>

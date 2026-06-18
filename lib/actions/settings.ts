@@ -37,3 +37,31 @@ export async function revokeInstructorStatus() {
   // Redirect to student dashboard
   redirect("/dashboard");
 }
+
+export async function deleteAccount() {
+  const session = await auth();
+  
+  if (!session?.user?.id) {
+    return { error: "Not authenticated" };
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { deletedAt: new Date() },
+    });
+
+    // Optionally, unpublish courses if they are an instructor
+    if (session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN") {
+      await prisma.course.updateMany({
+        where: { instructorId: session.user.id },
+        data: { status: "DRAFT" },
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("[DELETE_ACCOUNT]", error);
+    return { error: "Failed to delete account" };
+  }
+}

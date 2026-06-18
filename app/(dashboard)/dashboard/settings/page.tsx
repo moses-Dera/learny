@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings as SettingsIcon, Save, User, Bell, Shield, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DeleteAccountButton } from "./delete-account-button";
 
 export const metadata = {
   title: "Account Settings | LearnFlow",
@@ -109,9 +110,7 @@ export default async function DashboardSettingsPage() {
                   Permanently delete your account and all associated data. This action cannot be undone and you will lose access to all your purchased courses.
                 </p>
               </div>
-              <Button variant="destructive" size="sm">
-                Delete Account
-              </Button>
+              <DeleteAccountButton />
             </div>
           </CardContent>
         </Card>
