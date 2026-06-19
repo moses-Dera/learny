@@ -98,16 +98,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   events: {
     async createUser({ user }) {
-      const cookieStore = await cookies();
-      const intendedRole = cookieStore.get("intendedRole")?.value;
-      
-      if (intendedRole === "INSTRUCTOR") {
-        if (user.id) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { role: "INSTRUCTOR" },
-          });
+      try {
+        const cookieStore = await cookies();
+        const intendedRole = cookieStore.get("intendedRole")?.value;
+        
+        if (intendedRole === "INSTRUCTOR") {
+          if (user.id) {
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { role: "INSTRUCTOR" },
+            });
+            console.log(`[AUTH_EVENT] Upgraded newly created user ${user.email} to INSTRUCTOR`);
+          }
         }
+      } catch (error) {
+        console.error("[AUTH_EVENT_ERROR] Failed to assign role during user creation:", error);
       }
     },
   },
