@@ -65,3 +65,51 @@ export async function deleteAccount() {
     return { error: "Failed to delete account" };
   }
 }
+
+export async function updateProfile(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: "Not authenticated" };
+  }
+
+  const name = formData.get("name") as string;
+  
+  if (!name || name.trim() === "") {
+    return { error: "Name is required" };
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { name: name.trim() },
+    });
+    
+    revalidatePath("/dashboard/settings");
+    return { success: true };
+  } catch (error) {
+    console.error("[UPDATE_PROFILE]", error);
+    return { error: "Failed to update profile" };
+  }
+}
+
+export async function toggleNotification(type: "marketing" | "courses", enabled: boolean) {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
+  try {
+    const data = type === "marketing" 
+      ? { notifyMarketing: enabled } 
+      : { notifyCourseUpdates: enabled };
+
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data,
+    });
+    
+    revalidatePath("/dashboard/settings");
+    return { success: true };
+  } catch (error) {
+    console.error("[TOGGLE_NOTIFICATION]", error);
+    return { error: "Failed to update preferences" };
+  }
+}
