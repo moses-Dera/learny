@@ -33,7 +33,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           response_type: "code"
         }
       },
-      checks: ["pkce"] // Fixes the Auth.js v5 missing issuer (iss) parameter error on Vercel
+      checks: ["pkce"], // Fixes the Auth.js v5 missing issuer (iss) parameter error on Vercel
+      allowDangerousEmailAccountLinking: true, // Safe for Google because Google verifies emails
     }),
 
     Credentials({

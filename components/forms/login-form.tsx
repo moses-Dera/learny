@@ -80,7 +80,11 @@ export function LoginForm() {
           
           {error && (
             <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md">
-              {error === "CredentialsSignin" ? "Invalid email or password." : "Something went wrong."}
+              {error === "CredentialsSignin" 
+                ? "Invalid email or password." 
+                : error === "OAuthAccountNotLinked"
+                ? "An account with this email already exists. Please sign in using your original method (e.g., password)."
+                : "Something went wrong."}
             </div>
           )}
 
