@@ -124,3 +124,133 @@ export async function loginAction(prevState: any, formData: FormData) {
     return { error: "Internal server error." };
   }
 }
+
+
+// --- Forgot Password Action ---
+import crypto from "crypto";
+import { resend, FROM_EMAIL } from "@/lib/resend";
+import { ResetPasswordEmail } from "@/emails/reset-password";
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
+  try {
+    const data = Object.fromEntries(formData.entries());
+    const parsed = forgotPasswordSchema.safeParse(data);
+
+    if (!parsed.success) {
+      return { 
+        error: "Invalid input", 
+        fields: parsed.error.flatten().fieldErrors 
+      };
+    }
+
+    const { email } = parsed.data;
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user || !user.password) {
+      // Return success even if user doesn't exist to prevent email enumeration
+      return { success: true };
+    }
+
+    // Generate token
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 hours
+
+    // Delete existing reset tokens
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: `PASSWORD_RESET:${email}` },
+    });
+
+    // Save token
+    await prisma.verificationToken.create({
+      data: {
+        identifier: `PASSWORD_RESET:${email}`,
+        token,
+        expires,
+      },
+    });
+
+    // Send email
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const resetLink = `${appUrl}/reset-password?token=${token}`;
+
+    try {
+      await resend.send({
+        from: FROM_EMAIL,
+        to: email,
+        subject: "Reset your LearnFlow password",
+        react: ResetPasswordEmail({ resetLink }),
+      });
+    } catch (emailError) {
+      console.error("[EMAIL_ERROR]", emailError);
+      // Fire-and-forget: do not expose email failures
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("[FORGOT_PASSWORD_ERROR]", error);
+    return { error: "Internal server error." };
+  }
+}
+
+// --- Reset Password Action ---
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+export async function resetPasswordAction(prevState: any, formData: FormData) {
+  try {
+    const data = Object.fromEntries(formData.entries());
+    const parsed = resetPasswordSchema.safeParse(data);
+
+    if (!parsed.success) {
+      return { 
+        error: "Invalid input", 
+        fields: parsed.error.flatten().fieldErrors 
+      };
+    }
+
+    const { token, password } = parsed.data;
+
+    // Find token
+    const verificationToken = await prisma.verificationToken.findUnique({
+      where: { token },
+    });
+
+    if (!verificationToken || !verificationToken.identifier.startsWith("PASSWORD_RESET:")) {
+      return { error: "Invalid or expired reset token." };
+    }
+
+    if (verificationToken.expires < new Date()) {
+      return { error: "Token has expired." };
+    }
+
+    const email = verificationToken.identifier.replace("PASSWORD_RESET:", "");
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Update user
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    // Delete token
+    await prisma.verificationToken.delete({
+      where: { token },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("[RESET_PASSWORD_ERROR]", error);
+    return { error: "Internal server error." };
+  }
+}

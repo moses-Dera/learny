@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import Link from "next/link";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
@@ -63,9 +64,9 @@ export function LoginForm() {
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <a href="#" className="text-xs font-medium text-primary hover:underline underline-offset-4">
+              <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline underline-offset-4">
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <Input
               id="password"
