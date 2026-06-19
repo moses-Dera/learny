@@ -13,7 +13,9 @@ export function RegisterForm() {
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error");
   
-  const [role, setRole] = useState<"STUDENT" | "INSTRUCTOR">("STUDENT");
+  const [role, setRole] = useState<"STUDENT" | "INSTRUCTOR">(
+    searchParams.get("role") === "instructor" ? "INSTRUCTOR" : "STUDENT"
+  );
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [state, formAction, isPending] = useActionState(registerAction, null);
 
