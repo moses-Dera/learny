@@ -181,12 +181,34 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
     const resetLink = `${appUrl}/reset-password?token=${token}`;
 
     try {
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to: email,
-        subject: "Reset your LearnFlow password",
-        react: ResetPasswordEmail({ resetLink }),
-      });
+      if (process.env.NODE_ENV === "development") {
+        const nodemailer = await import("nodemailer");
+        const { render } = await import("@react-email/components");
+        
+        const transporter = nodemailer.createTransport({
+          host: "localhost",
+          port: 1025,
+          secure: false,
+        });
+
+        const html = await render(ResetPasswordEmail({ resetLink }));
+        
+        await transporter.sendMail({
+          from: FROM_EMAIL || "test@learnflow.local",
+          to: email,
+          subject: "Reset your LearnFlow password",
+          html,
+        });
+        
+        console.log(`[MAILPIT] Password reset email sent to ${email}`);
+      } else {
+        await resend.emails.send({
+          from: FROM_EMAIL,
+          to: email,
+          subject: "Reset your LearnFlow password",
+          react: ResetPasswordEmail({ resetLink }),
+        });
+      }
     } catch (emailError) {
       console.error("[EMAIL_ERROR]", emailError);
       // Fire-and-forget: do not expose email failures

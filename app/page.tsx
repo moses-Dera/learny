@@ -21,7 +21,7 @@ export default function LandingPage() {
                 <Link href="/courses" className={`${buttonVariants({ size: "lg" })} w-full sm:w-auto h-11 px-8 text-sm font-semibold bg-primary text-white border border-transparent hover:bg-transparent hover:border-primary hover:text-primary transition-all`}>
                   Start Learning Free
                 </Link>
-                <Link href="/register?role=instructor" className={`${buttonVariants({ size: "lg", variant: "outline" })} w-full sm:w-auto h-11 px-8 text-sm font-semibold bg-transparent text-foreground border border-foreground/30 hover:bg-foreground hover:!text-black transition-all`}>
+                <Link href="/register" className={`${buttonVariants({ size: "lg", variant: "outline" })} w-full sm:w-auto h-11 px-8 text-sm font-semibold bg-transparent text-foreground border border-foreground/30 hover:bg-foreground hover:!text-black transition-all`}>
                   Become an Instructor
                 </Link>
               </div>
