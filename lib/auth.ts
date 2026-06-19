@@ -26,6 +26,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      },
+      checks: ["pkce"] // Fixes the Auth.js v5 missing issuer (iss) parameter error on Vercel
     }),
 
     Credentials({
