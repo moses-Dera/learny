@@ -181,7 +181,7 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
     const resetLink = `${appUrl}/reset-password?token=${token}`;
 
     try {
-      await resend.send({
+      await resend.emails.send({
         from: FROM_EMAIL,
         to: email,
         subject: "Reset your LearnFlow password",
