@@ -27,6 +27,7 @@ export function RegisterForm() {
 
   async function onGoogleSignIn() {
     setIsGoogleLoading(true);
+    document.cookie = `intendedRole=${role.toUpperCase()}; path=/; max-age=3600`;
     await signIn("google", { callbackUrl: "/dashboard" });
   }
 

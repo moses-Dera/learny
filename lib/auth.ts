@@ -11,6 +11,7 @@ import { prisma } from "@/lib/db";
 import { env } from "@/lib/env";
 import { z } from "zod";
 import { authConfig } from "@/lib/auth.config";
+import { cookies } from "next/headers";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -92,6 +93,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       return true;
+    },
+  },
+
+  events: {
+    async createUser({ user }) {
+      const cookieStore = await cookies();
+      const intendedRole = cookieStore.get("intendedRole")?.value;
+      
+      if (intendedRole === "INSTRUCTOR") {
+        if (user.id) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { role: "INSTRUCTOR" },
+          });
+        }
+      }
     },
   },
 });
