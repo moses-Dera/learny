@@ -12,8 +12,8 @@ import { registerAction } from "@/lib/actions/auth";
 export function RegisterForm() {
   const searchParams = useSearchParams();
   const urlError = searchParams.get("error");
-  const role = searchParams.get("role") || "STUDENT";
   
+  const [role, setRole] = useState<"STUDENT" | "INSTRUCTOR">("STUDENT");
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [state, formAction, isPending] = useActionState(registerAction, null);
 
@@ -27,7 +27,7 @@ export function RegisterForm() {
 
   async function onGoogleSignIn() {
     setIsGoogleLoading(true);
-    document.cookie = `intendedRole=${role.toUpperCase()}; path=/; max-age=3600`;
+    document.cookie = `intendedRole=${role}; path=/; max-age=3600`;
     await signIn("google", { callbackUrl: "/dashboard" });
   }
 
@@ -36,8 +36,25 @@ export function RegisterForm() {
   return (
     <div className="grid gap-6">
       <form action={formAction}>
-        <input type="hidden" name="role" value={role.toUpperCase()} />
+        <input type="hidden" name="role" value={role} />
         <div className="grid gap-4">
+          
+          <div className="grid grid-cols-2 gap-2 bg-muted p-1 rounded-lg">
+            <button
+              type="button"
+              onClick={() => setRole("STUDENT")}
+              className={`text-sm font-medium py-1.5 rounded-md transition-colors ${role === "STUDENT" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Student
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("INSTRUCTOR")}
+              className={`text-sm font-medium py-1.5 rounded-md transition-colors ${role === "INSTRUCTOR" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Instructor
+            </button>
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="name">Full Name</Label>
             <Input
