@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { prisma } from "@/lib/db";
 import { LayoutDashboard, Video, BarChart, Settings, ArrowLeft } from "lucide-react";
 import { SignOutButton } from "@/components/forms/signout-button";
 
@@ -11,12 +12,19 @@ export default async function InstructorLayout({ children }: { children: React.R
   const session = await auth();
   const notifications = await getNotifications();
   
-  if (!session?.user) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true, role: true }
+  });
+
+  if (!dbUser) redirect("/login");
+
   // Strict structural authorization gate
-  if (session.user.role !== "INSTRUCTOR" && session.user.role !== "ADMIN") {
+  if (dbUser.role !== "INSTRUCTOR" && dbUser.role !== "ADMIN") {
     redirect("/dashboard");
   }
 
@@ -74,11 +82,11 @@ export default async function InstructorLayout({ children }: { children: React.R
             <NotificationBell initialNotifications={notifications} />
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="text-sm font-medium text-foreground leading-none">{session.user.name}</span>
+                <span className="text-sm font-medium text-foreground leading-none">{dbUser.name}</span>
                 <span className="text-[10px] text-primary font-bold uppercase tracking-wider mt-1">Creator</span>
               </div>
               <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-sm">
-                {session.user.name?.charAt(0) || "U"}
+                {dbUser.name?.charAt(0) || "U"}
               </div>
             </div>
           </div>

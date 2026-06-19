@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { prisma } from "@/lib/db";
 import { LayoutDashboard, BookOpen, Settings, Video } from "lucide-react";
 import { SignOutButton } from "@/components/forms/signout-button";
 
@@ -10,11 +11,19 @@ import { getNotifications } from "@/lib/actions/notifications";
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   const notifications = await getNotifications();
-  if (!session?.user) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 
-  const isInstructor = session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN";
+  // Fetch the fresh user from the DB so the header always has the up-to-date name
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true, role: true }
+  });
+
+  if (!dbUser) redirect("/login");
+
+  const isInstructor = dbUser.role === "INSTRUCTOR" || dbUser.role === "ADMIN";
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-background">
@@ -65,11 +74,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <NotificationBell initialNotifications={notifications} />
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="text-sm font-medium text-foreground leading-none">{session.user.name}</span>
-                <span className="text-xs text-muted-foreground capitalize mt-1">{session.user.role?.toLowerCase()}</span>
+                <span className="text-sm font-medium text-foreground leading-none">{dbUser.name}</span>
+                <span className="text-xs text-muted-foreground capitalize mt-1">{dbUser.role?.toLowerCase()}</span>
               </div>
               <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-sm">
-                {session.user.name?.charAt(0) || "U"}
+                {dbUser.name?.charAt(0) || "U"}
               </div>
             </div>
           </div>
