@@ -25,7 +25,7 @@ export default async function CatalogPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {courses.map((course: any) => {
-            const totalLessons = course.sections.flatMap((s: any) => s.lessons).length;
+            const totalLessons = course.sections?.flatMap((s: any) => s.lessons || [])?.length || 0;
             
             return (
               <Link key={course.id} href={`/courses/${course.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors shadow-sm flex flex-col">
@@ -41,7 +41,7 @@ export default async function CatalogPage() {
                 
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-bold text-lg text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">{course.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{course.instructor.name}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{course.instructor?.name || "Unknown Instructor"}</p>
                   
                   <div className="mt-auto flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded-md">
