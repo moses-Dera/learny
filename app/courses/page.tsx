@@ -19,6 +19,12 @@ export default async function CatalogPage() {
     <div className="min-h-screen bg-background p-6 lg:p-12">
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="space-y-4">
+          <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+            Back to Home
+          </Link>
           <h1 className="text-4xl font-bold text-foreground">Course Catalog</h1>
           <p className="text-xl text-muted-foreground">Discover new skills and elevate your career.</p>
         </div>
