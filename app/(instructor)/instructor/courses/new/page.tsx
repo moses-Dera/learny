@@ -1,12 +1,17 @@
 import { Metadata } from "next";
 import { CreateCourseForm } from "@/components/forms/create-course-form";
+import { prisma } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Create New Course | Instructor Studio",
   description: "Create a new course in the Learny instructor studio",
 };
 
-export default function CreateCoursePage() {
+export default async function CreateCoursePage() {
+  const categories = await prisma.category.findMany({
+    orderBy: { name: 'asc' }
+  });
+
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-300 py-8">
       <div>
@@ -17,7 +22,7 @@ export default function CreateCoursePage() {
       </div>
 
       <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-        <CreateCourseForm />
+        <CreateCourseForm categories={categories} />
       </div>
     </div>
   );

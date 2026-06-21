@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createCourseAction } from "@/lib/actions/courses";
 import { useRouter } from "next/navigation";
 
-export function CreateCourseForm() {
+export function CreateCourseForm({ categories }: { categories: { id: string; name: string }[] }) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createCourseAction, null);
 
@@ -72,6 +72,45 @@ export function CreateCourseForm() {
         {state?.details?.price && <p className="text-xs text-destructive">{state.details.price[0]}</p>}
       </div>
 
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="categoryId">Category</Label>
+          <select
+            id="categoryId"
+            name="categoryId"
+            disabled={isLoading}
+            required
+            defaultValue=""
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="" disabled>Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id} className="bg-background text-foreground">
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {state?.details?.categoryId && <p className="text-xs text-destructive">{state.details.categoryId[0]}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="level">Difficulty Level</Label>
+          <select
+            id="level"
+            name="level"
+            disabled={isLoading}
+            required
+            defaultValue=""
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="" disabled>Select a level</option>
+            <option value="BEGINNER" className="bg-background text-foreground">Beginner</option>
+            <option value="INTERMEDIATE" className="bg-background text-foreground">Intermediate</option>
+            <option value="ADVANCED" className="bg-background text-foreground">Advanced</option>
+          </select>
+          {state?.details?.level && <p className="text-xs text-destructive">{state.details.level[0]}</p>}
+        </div>
+      </div>
       {state?.error && (
         <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md">
           {state.error}

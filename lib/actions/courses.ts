@@ -9,6 +9,8 @@ const courseSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(100),
   description: z.string().max(500).optional().or(z.literal("")),
   price: z.coerce.number().min(0, "Price must be positive").optional(),
+  categoryId: z.string().min(1, "Please select a category"),
+  level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"], { required_error: "Please select a difficulty level" }),
 });
 
 export async function createCourseAction(state: any, formData: FormData) {
@@ -22,6 +24,8 @@ export async function createCourseAction(state: any, formData: FormData) {
     title: formData.get("title") as string,
     description: formData.get("description") as string,
     price: formData.get("price"),
+    categoryId: formData.get("categoryId") as string,
+    level: formData.get("level") as string,
   };
 
   const parsed = courseSchema.safeParse(data);
@@ -33,7 +37,7 @@ export async function createCourseAction(state: any, formData: FormData) {
     };
   }
 
-  const { title, description, price } = parsed.data;
+  const { title, description, price, categoryId, level } = parsed.data;
 
   // Generate a URL-friendly slug with a random suffix for uniqueness
   const baseSlug = title
@@ -50,6 +54,8 @@ export async function createCourseAction(state: any, formData: FormData) {
         description: description || "",
         price: price || 0,
         slug,
+        categoryId,
+        level,
         instructorId: session.user.id,
         status: "DRAFT",
       },
