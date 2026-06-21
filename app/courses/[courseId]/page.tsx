@@ -180,7 +180,7 @@ export default async function CourseDetailPage({
                       }
                     }
                   }}>
-                    <Button className="w-full h-12 text-lg">Enroll Now</Button>
+                    <Button type="submit" className="w-full h-12 text-lg">Enroll Now</Button>
                   </form>
                 );
               })()
