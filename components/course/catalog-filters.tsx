@@ -58,11 +58,11 @@ export function CatalogFilters({
       </div>
 
       {/* Category Pills */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
         <button
           onClick={() => createQueryString("category", "")}
           className={cn(
-            "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
+            "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border shrink-0",
             !currentCategory
               ? "bg-primary text-primary-foreground border-primary"
               : "bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground"
@@ -75,7 +75,7 @@ export function CatalogFilters({
             key={category.id}
             onClick={() => createQueryString("category", category.slug)}
             className={cn(
-              "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
+              "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border shrink-0",
               currentCategory === category.slug
                 ? "bg-primary text-primary-foreground border-primary"
                 : "bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground"
