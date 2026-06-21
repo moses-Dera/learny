@@ -65,7 +65,7 @@ export default async function CatalogPage({
                 <Link key={course.id} href={`/courses/${course.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors shadow-sm flex flex-col">
                   <div className="aspect-video bg-muted relative overflow-hidden">
                     {course.thumbnailUrl ? (
-                      <Image src={course.thumbnailUrl} alt={course.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <Image src={course.thumbnailUrl} alt={course.title} fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center font-bold text-muted-foreground/30 text-2xl uppercase">
                         {course.title.substring(0,2)}

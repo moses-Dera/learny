@@ -106,7 +106,7 @@ export default async function CourseDetailPage({
           <div className="bg-background rounded-2xl p-6 border border-border shadow-xl space-y-6">
             <div className="aspect-video bg-muted rounded-xl relative overflow-hidden">
                {course.thumbnailUrl ? (
-                 <Image src={course.thumbnailUrl} alt={course.title} fill className="object-cover" />
+                 <Image src={course.thumbnailUrl} alt={course.title} fill unoptimized className="object-cover" />
                ) : (
                  <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                    No Video Preview
