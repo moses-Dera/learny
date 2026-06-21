@@ -7,6 +7,7 @@ import { SignOutButton } from "@/components/forms/signout-button";
 
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { getNotifications } from "@/lib/actions/notifications";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 export default async function InstructorLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -31,7 +32,7 @@ export default async function InstructorLayout({ children }: { children: React.R
   return (
     <div className="min-h-screen md:h-screen flex flex-col md:flex-row bg-background md:overflow-hidden">
       {/* Instructor Studio Sidebar */}
-      <aside className="w-full md:w-64 bg-card border-r border-border flex flex-col shrink-0">
+      <aside className="hidden md:flex md:w-64 bg-card border-r border-border flex-col shrink-0">
         <div className="h-16 flex items-center px-6 border-b border-border">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg text-foreground hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
@@ -76,8 +77,16 @@ export default async function InstructorLayout({ children }: { children: React.R
 
       {/* Main Studio Workspace */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 flex items-center justify-between px-6 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-          <h1 className="text-xl font-semibold text-foreground truncate">Studio Workspace</h1>
+        <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+          <div className="flex items-center">
+            <MobileNav isInstructor={true} isAdmin={dbUser.role === "ADMIN"} />
+            <h1 className="text-xl font-semibold text-foreground truncate hidden sm:block">Studio Workspace</h1>
+            <Link href="/" className="md:hidden flex items-center gap-2 font-bold text-lg text-foreground">
+              <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
+                <span className="text-[#15110F] text-[8px] font-black tracking-widest">STUDIO</span>
+              </div>
+            </Link>
+          </div>
           <div className="flex items-center gap-4 shrink-0">
             <NotificationBell initialNotifications={notifications} />
             <div className="flex items-center gap-3">
