@@ -1,103 +1,96 @@
 # Learny LMS
 
-A modern, production-ready Learning Management System built to handle secure video streaming, dynamic course enrollment, and complex multi-role workflows.
+A modern, full-stack Learning Management System (LMS) built with Next.js 15, Prisma, and PostgreSQL. Designed for both students and instructors, featuring seamless video streaming, and a sleek, responsive UI. (Note: Currently supports free courses, with Paystack integration for paid courses coming soon).
+
+![Learny Preview](https://github.com/user-attachments/assets/lms-preview-placeholder)
+
+##  Features
+
+### For Students
+- **Browse & Enroll**: Discover courses via a dynamic catalog with robust filtering and search.
+- **Payments (Coming Soon)**: Currently supports free course enrollments. Paystack integration is actively being developed to support premium courses and ensure seamless payment processing in regions where Stripe is unavailable.
+- **Video Learning**: High-quality video playback powered by Mux.
+- **Progress Tracking**: Auto-saves video progress and lesson completion status.
+
+### For Instructors
+- **Instructor Studio**: A dedicated dashboard to manage courses, chapters, and lessons.
+- **Direct Uploads**: Secure, direct-to-bucket image uploads via Cloudflare R2 and video uploads via Mux.
+- **Analytics**: Track active courses, total students, and aggregated revenue.
+
+### Core Platform
+- **Role-Based Access**: Granular permissions (Student, Instructor, Admin).
+- **Authentication**: Secure login via NextAuth.js v5 (Google OAuth & Credentials).
+- **Dark Mode**: Premium, dark-themed UI built with Tailwind CSS and shadcn/ui.
 
 ---
 
-## Features
+## 🛠️ Tech Stack
 
-- **Role-Based Access Control (RBAC):** Three distinct user roles (Student, Instructor, Admin) with deeply integrated Edge Middleware protection.
-
-- **Instructor Studio:** A dedicated dashboard for course creators to draft curriculums, organize sections, and manage lesson content.
-
-- **Admin Approval Workflow:** A dedicated portal for administrators to review, approve, or reject courses before they are published to the public catalog.
-
-- **Secure Video Processing:** Architecture designed around Mux Direct Uploads and Webhooks for asynchronous video encoding and playback.
-
-- **Idempotent Payments:** Stripe checkout integration designed to prevent double-enrollments and handle asynchronous webhook delivery securely.
-
-- **Notification Engine:** Real-time, database-backed notification system for alerting users to course approvals, reviews, and platform updates.
-
-- **Serverless PostgreSQL:** Fully configured for Neon Database with connection pooling (`DATABASE_URL`) and direct migration access (`DIRECT_URL`).
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router & Server Actions)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) (hosted on Neon)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Authentication**: [NextAuth v5 (Auth.js)](https://authjs.dev/)
+- **Payments**: [Paystack](https://paystack.com/) *(Integration in progress — Chosen over Stripe to support creators and students in regions where Stripe account creation is restricted)*
+- **Video Hosting**: [Mux](https://mux.com/)
+- **File Storage**: [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+- **Validation**: [Zod](https://zod.dev/)
 
 ---
 
-## Tech Stack
+## 💻 Running Locally
 
-- **Framework:** [Next.js 15](https://nextjs.org/) (App Router & React Server Components)
-- **Database:** [PostgreSQL](https://www.postgresql.org/) hosted on [Neon](https://neon.tech/)
-- **ORM:** [Prisma 7](https://www.prisma.io/)
-- **Authentication:** [NextAuth.js (v5)](https://authjs.dev/)
-- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-- **UI Components:** [Radix UI](https://www.radix-ui.com/) Primitives & [Lucide Icons](https://lucide.dev/)
+### Prerequisites
+- Node.js (v18+)
+- PostgreSQL Database
+- API Keys for Mux, Cloudflare R2, and Google OAuth (Paystack keys required for future updates).
 
----
+### Setup
 
-## Local Development
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/learny.git
+   cd learny
+   ```
 
-### 1. Prerequisites
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-- Node.js 18.17 or later
-- [Docker](https://www.docker.com/) (Required for local Postgres and Mailpit email testing)
+3. **Configure Environment Variables**
+   Duplicate `.env.example` and rename it to `.env`. Fill in the required API keys and connection strings.
+   ```bash
+   cp .env.example .env
+   ```
 
-### 2. Installation
+4. **Initialize the Database**
+   Push the Prisma schema to your database.
+   ```bash
+   npx prisma migrate dev
+   ```
 
-Clone the repository and install the dependencies:
-
-```bash
-git clone https://github.com/yourusername/learny.git
-cd learny
-npm install
-```
-
-### 3. Environment Variables
-
-Copy the `.env.example` file to `.env` and fill in your keys:
-
-```bash
-cp .env.example .env
-```
-
-*Note: Make sure to fill in `AUTH_SECRET` (generate with `openssl rand -base64 32`). For local development, the database connection strings are pre-configured to use the Docker container.*
-
-### 4. Database Initialization
-
-Since we use a local Docker Postgres database, you must start the container and push the schema before your first run:
-
-```bash
-docker compose up -d postgres
-npx prisma db push
-docker compose down
-```
-
-### 5. Start the Development Server
-
-Our custom `npm run dev` script will automatically start the required Docker containers (Postgres & Mailpit) and the Next.js server. When you stop it, it will gracefully shut the containers down!
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### 6. View the Database
-
-To interact with your local data, you can use Prisma Studio's visual interface:
-
-```bash
-npx prisma studio
-```
-
-This will open a UI at [http://localhost:5555](http://localhost:5555) where you can easily view and edit all records.
+5. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
+   The app will be running at `http://localhost:3000`.
 
 ---
 
-## Architecture Note
+## 🔐 Environment Variables
 
-Learny is designed as a **Webhook-Driven** system. There are no manual background message queues (like RabbitMQ or Redis) running in this codebase. Instead, heavy asynchronous tasks (like video encoding and payment processing) are offloaded to third-party platforms (Mux and Stripe), which deliver webhooks back to our Next.js API routes upon completion. 
+The project requires the following environment variables to run fully:
+
+- `DATABASE_URL` & `DIRECT_URL` (PostgreSQL connection strings)
+- `AUTH_SECRET` (Generated via `npx auth secret`)
+- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`
+- `PAYSTACK_SECRET_KEY` & `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` *(Coming soon)*
+- `MUX_TOKEN_ID` & `MUX_TOKEN_SECRET` & `MUX_WEBHOOK_SECRET`
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`
 
 ---
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
