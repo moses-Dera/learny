@@ -2,7 +2,7 @@
 
 import MuxPlayer from "@mux/mux-player-react";
 import { Lock, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 interface VideoPlayerProps {
@@ -15,6 +15,7 @@ interface VideoPlayerProps {
 export function VideoPlayer({ playbackId, courseId, lessonId, isLocked }: VideoPlayerProps) {
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
+  const lastSavedTime = useRef(0);
 
   if (isLocked) {
     return (
@@ -46,6 +47,22 @@ export function VideoPlayer({ playbackId, courseId, lessonId, isLocked }: VideoP
     }
   };
 
+  const handleTimeUpdate = async (e: Event) => {
+    const target = e.target as HTMLVideoElement;
+    const currentTime = target.currentTime;
+    
+    // Auto-save every 30 seconds
+    if (currentTime - lastSavedTime.current >= 30) {
+      lastSavedTime.current = currentTime;
+      try {
+        const { updateWatchProgress } = await import("@/lib/actions/progress");
+        await updateWatchProgress(lessonId, currentTime);
+      } catch (error) {
+        // Silently fail in background
+      }
+    }
+  };
+
   return (
     <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg border border-border bg-black">
       {!isReady && (
@@ -59,6 +76,7 @@ export function VideoPlayer({ playbackId, courseId, lessonId, isLocked }: VideoP
         className="w-full h-full"
         onCanPlay={() => setIsReady(true)}
         onEnded={handleEnded}
+        onTimeUpdate={handleTimeUpdate}
         accentColor="var(--primary)"
       />
     </div>

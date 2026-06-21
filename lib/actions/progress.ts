@@ -94,3 +94,33 @@ export async function completeLesson(lessonId: string) {
     return { error: "Failed to mark lesson as complete" };
   }
 }
+
+export async function updateWatchProgress(lessonId: string, watchedSeconds: number) {
+  const session = await auth();
+  
+  if (!session?.user?.id) return { error: "Unauthorized" };
+
+  try {
+    await prisma.lessonProgress.upsert({
+      where: {
+        userId_lessonId: {
+          userId: session.user.id,
+          lessonId: lessonId,
+        }
+      },
+      update: {
+        watchedSeconds: Math.floor(watchedSeconds),
+      },
+      create: {
+        userId: session.user.id,
+        lessonId: lessonId,
+        watchedSeconds: Math.floor(watchedSeconds),
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("[UPDATE_WATCH_PROGRESS]", error);
+    return { error: "Failed to update watch progress" };
+  }
+}
