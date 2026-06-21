@@ -70,7 +70,7 @@ export default async function CourseLayout({
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-background">
       {/* Course Navigation Sidebar */}
-      <aside className="w-full md:w-80 bg-card border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-hidden">
+      <aside className="w-full md:w-80 bg-card border-r border-border flex flex-col shrink-0 md:h-screen md:sticky top-0 overflow-hidden order-2 md:order-1">
         <div className="h-16 flex items-center px-4 border-b border-border shrink-0">
           <Link href="/dashboard" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />
@@ -135,7 +135,7 @@ export default async function CourseLayout({
       </aside>
 
       {/* Video / Lesson Content Area */}
-      <main className="flex-1 min-w-0 flex flex-col bg-muted/10 h-screen overflow-y-auto">
+      <main className="flex-1 min-w-0 flex flex-col bg-muted/10 md:h-screen overflow-y-auto order-1 md:order-2">
         {children}
       </main>
     </div>

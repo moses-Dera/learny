@@ -87,7 +87,7 @@ export async function completeLesson(lessonId: string) {
     }
 
     // Revalidate the course layout so the sidebar checkboxes and progress bar update
-    revalidatePath(`/courses/${lesson.section.courseId}`);
+    revalidatePath(`/courses/${lesson.section.courseId}`, 'layout');
     return { success: true };
   } catch (error) {
     console.error("[COMPLETE_LESSON]", error);
