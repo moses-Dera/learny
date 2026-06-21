@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
-import { ShieldCheck, BookOpen, Users, Settings, Tags } from "lucide-react";
+import { ShieldCheck, BookOpen, Users, Settings, Tags, ArrowLeft } from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -60,6 +60,12 @@ export default async function AdminLayout({
             Settings
           </Link>
         </nav>
+        <div className="p-4 border-t border-border">
+          <Link href="/dashboard" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Student View
+          </Link>
+        </div>
       </aside>
 
       {/* Main Content */}

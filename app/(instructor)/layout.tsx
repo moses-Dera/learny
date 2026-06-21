@@ -33,7 +33,7 @@ export default async function InstructorLayout({ children }: { children: React.R
       {/* Instructor Studio Sidebar */}
       <aside className="w-full md:w-64 bg-card border-r border-border flex flex-col shrink-0 md:sticky md:top-0 md:h-screen">
         <div className="h-16 flex items-center px-6 border-b border-border">
-          <Link href="/instructor" className="flex items-center gap-2 font-bold text-lg text-foreground hover:opacity-80 transition-opacity">
+          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-foreground hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
               <span className="text-[#15110F] text-[10px] font-black tracking-widest">STUDIO</span>
             </div>

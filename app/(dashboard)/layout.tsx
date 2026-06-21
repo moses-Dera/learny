@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { LayoutDashboard, BookOpen, Settings, Video } from "lucide-react";
+import { LayoutDashboard, BookOpen, Settings, Video, ShieldCheck } from "lucide-react";
 import { SignOutButton } from "@/components/forms/signout-button";
 
 import { NotificationBell } from "@/components/layout/notification-bell";
@@ -24,6 +24,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!dbUser) redirect("/login");
 
   const isInstructor = dbUser.role === "INSTRUCTOR" || dbUser.role === "ADMIN";
+  const isAdmin = dbUser.role === "ADMIN";
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-background">
@@ -52,6 +53,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <Link href="/instructor" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
                 <Video className="w-4 h-4" />
                 Instructor Studio
+              </Link>
+            )}
+            {isAdmin && (
+              <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                <ShieldCheck className="w-4 h-4" />
+                Admin Console
               </Link>
             )}
             <Link href="/dashboard/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
