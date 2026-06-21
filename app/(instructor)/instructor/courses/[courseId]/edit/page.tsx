@@ -54,7 +54,12 @@ export default async function EditCoursePage({
       <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
         <form action={async (formData: FormData) => {
           "use server";
-          await updateCourseAction(course.id, formData);
+          const res = await updateCourseAction(course.id, formData);
+          if (res && res.error) {
+            console.error("FAILED TO UPDATE COURSE:", res.error, res.details);
+            // Ideally we would show a toast here, but throwing prevents the redirect
+            throw new Error(res.error);
+          }
           redirect(`/instructor/courses/${course.id}`);
         }} className="space-y-6">
           

@@ -218,7 +218,9 @@ export async function updateCourseAction(courseId: string, formData: FormData) {
       data: parsed.data,
     });
 
-    revalidatePath(`/instructor/courses/${courseId}`);
+    revalidatePath(`/instructor/courses/${courseId}`, 'layout');
+    revalidatePath(`/courses`, 'layout');
+    
     return { success: true };
   } catch (error) {
     console.error("[UPDATE_COURSE_ERROR]", error);
