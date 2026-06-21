@@ -37,9 +37,13 @@ export function VideoPlayer({ playbackId, courseId, lessonId, isLocked }: VideoP
   }
 
   const handleEnded = async () => {
-    // We would fire a Server Action here to mark the lesson as completed
-    // e.g. await markLessonComplete(lessonId);
-    // router.refresh();
+    try {
+      const { completeLesson } = await import("@/lib/actions/progress");
+      await completeLesson(lessonId);
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to mark lesson complete", error);
+    }
   };
 
   return (

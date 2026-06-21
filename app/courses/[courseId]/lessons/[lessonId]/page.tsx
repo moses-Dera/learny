@@ -68,6 +68,7 @@ export default async function LessonPage({
           await completeLesson(lessonId);
         }}>
           <Button 
+            type="submit"
             variant={isCompleted ? "outline" : "default"} 
             className={`gap-2 w-full sm:w-auto ${isCompleted ? 'border-green-500/30 bg-green-500/5 text-green-600 hover:bg-green-500/10' : ''}`}
             disabled={isCompleted}
