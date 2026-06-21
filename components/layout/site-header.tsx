@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { NotificationBell } from "./notification-bell";
 import { getNotifications } from "@/lib/actions/notifications";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { cn } from "@/lib/utils";
 
 export async function SiteHeader() {
   const session = await auth();
@@ -50,16 +51,16 @@ export async function SiteHeader() {
             <div className="flex items-center gap-2">
               <NotificationBell initialNotifications={notifications} />
               {session.user.role === "ADMIN" && (
-                <Link href="/admin" className={`${buttonVariants({ variant: "outline" })} hidden md:inline-flex`}>
+                <Link href="/admin" className={cn(buttonVariants({ variant: "outline" }), "hidden md:inline-flex")}>
                   Admin
                 </Link>
               )}
               {(session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN") && (
-                <Link href="/instructor" className={`${buttonVariants({ variant: "outline" })} hidden md:inline-flex`}>
+                <Link href="/instructor" className={cn(buttonVariants({ variant: "outline" }), "hidden md:inline-flex")}>
                   Instructor
                 </Link>
               )}
-              <Link href="/dashboard" className={`${buttonVariants({ variant: "default" })} hidden md:inline-flex`}>
+              <Link href="/dashboard" className={cn(buttonVariants({ variant: "default" }), "hidden md:inline-flex")}>
                 Dashboard
               </Link>
             </div>
