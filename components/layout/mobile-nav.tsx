@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, LogOut } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 
 interface MobileNavProps {
   isInstructor?: boolean;
@@ -18,39 +18,54 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ isInstructor, isAdmin }: MobileNavProps) {
+  const router = useRouter();
+
   return (
     <div className="md:hidden flex items-center mr-4">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-10 w-10 px-0">
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
+        <DropdownMenuTrigger className={`${buttonVariants({ variant: "ghost", size: "icon" })} h-10 w-10 px-0`}>
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Toggle menu</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-56 mt-2">
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard" className="w-full cursor-pointer py-2 text-base">Dashboard</Link>
+          <DropdownMenuItem 
+            className="w-full cursor-pointer py-2 text-base"
+            onClick={() => router.push("/dashboard")}
+          >
+            Dashboard
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/courses" className="w-full cursor-pointer py-2 text-base">Course Catalog</Link>
+          <DropdownMenuItem 
+            className="w-full cursor-pointer py-2 text-base"
+            onClick={() => router.push("/courses")}
+          >
+            Course Catalog
           </DropdownMenuItem>
           
           {isInstructor && (
-            <DropdownMenuItem asChild>
-              <Link href="/instructor" className="w-full cursor-pointer py-2 text-base text-primary font-medium">Instructor Studio</Link>
+            <DropdownMenuItem 
+              className="w-full cursor-pointer py-2 text-base text-primary font-medium"
+              onClick={() => router.push("/instructor")}
+            >
+              Instructor Studio
             </DropdownMenuItem>
           )}
           
           {isAdmin && (
-            <DropdownMenuItem asChild>
-              <Link href="/admin" className="w-full cursor-pointer py-2 text-base">Admin Console</Link>
+            <DropdownMenuItem 
+              className="w-full cursor-pointer py-2 text-base"
+              onClick={() => router.push("/admin")}
+            >
+              Admin Console
             </DropdownMenuItem>
           )}
           
           <DropdownMenuSeparator />
           
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings" className="w-full cursor-pointer py-2 text-base">Settings</Link>
+          <DropdownMenuItem 
+            className="w-full cursor-pointer py-2 text-base"
+            onClick={() => router.push("/dashboard/settings")}
+          >
+            Settings
           </DropdownMenuItem>
           
           <DropdownMenuSeparator />
