@@ -34,7 +34,7 @@ export default async function InstructorOverviewPage() {
   // Calculate revenue (mocked based on enrollments for now unless there's a payment table)
   // Let's assume we just use payments later, for now we will show $0.00 or fetch from Payment
   const payments = await prisma.payment.aggregate({
-    where: { course: { instructorId: session.user.id }, status: "COMPLETED" },
+    where: { enrollment: { course: { instructorId: session.user.id } }, status: "SUCCEEDED" },
     _sum: { amount: true }
   });
   const totalRevenue = (payments._sum.amount || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
