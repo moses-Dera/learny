@@ -15,7 +15,25 @@ export async function completeLesson(lessonId: string) {
     const lesson = await prisma.lesson.findUnique({
       where: { id: lessonId },
       include: {
-        section: true,
+        section: {
+          include: {
+            course: {
+              include: {
+                enrollments: {
+                  where: { userId: session.user.id },
+                  take: 1,
+                },
+                sections: {
+                  include: {
+                    lessons: {
+                      select: { id: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       }
     });
 
@@ -40,6 +58,33 @@ export async function completeLesson(lessonId: string) {
         completed: true,
       }
     });
+
+    const enrollment = lesson.section.course.enrollments[0];
+    if (enrollment) {
+      const allLessonIds = lesson.section.course.sections.flatMap((s) =>
+        s.lessons.map((l) => l.id),
+      );
+
+      const completedCount = await prisma.lessonProgress.count({
+        where: {
+          userId: session.user.id,
+          lessonId: { in: allLessonIds },
+          completed: true,
+        },
+      });
+
+      const progressPercent = Math.round(
+        (completedCount / allLessonIds.length) * 100,
+      );
+
+      await prisma.enrollment.update({
+        where: { id: enrollment.id },
+        data: {
+          progressPercent,
+          completedAt: progressPercent === 100 ? new Date() : null,
+        },
+      });
+    }
 
     // Revalidate the course layout so the sidebar checkboxes and progress bar update
     revalidatePath(`/courses/${lesson.section.courseId}`);

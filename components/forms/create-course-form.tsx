@@ -1,17 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploader } from "@/components/ui/image-uploader";
 import { createCourseAction } from "@/lib/actions/courses";
 import { useRouter } from "next/navigation";
 
 export function CreateCourseForm({ categories }: { categories: { id: string; name: string }[] }) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createCourseAction, null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
 
   useEffect(() => {
     if (state?.success && state.courseId) {
@@ -49,6 +51,18 @@ export function CreateCourseForm({ categories }: { categories: { id: string; nam
           className="bg-transparent resize-none"
         />
         {state?.details?.description && <p className="text-xs text-destructive">{state.details.description[0]}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="thumbnailUrl">Thumbnail Image</Label>
+        <ImageUploader 
+          value={thumbnailUrl} 
+          onChange={setThumbnailUrl} 
+          disabled={isLoading} 
+        />
+        <input type="hidden" name="thumbnailUrl" value={thumbnailUrl} />
+        <p className="text-xs text-muted-foreground">Upload a cover image for your course (16:9 recommended).</p>
+        {state?.details?.thumbnailUrl && <p className="text-xs text-destructive">{state.details.thumbnailUrl[0]}</p>}
       </div>
 
       <div className="space-y-2">

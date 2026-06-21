@@ -6,6 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { updateCourseAction } from "@/lib/actions/courses";
+import { ThumbnailInput } from "@/components/forms/thumbnail-input";
 
 export const metadata: Metadata = {
   title: "Edit Course | Instructor Studio",
@@ -78,6 +79,12 @@ export default async function EditCoursePage({
               rows={4}
               className="w-full flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="thumbnailUrl" className="text-sm font-medium">Thumbnail Image</label>
+            <ThumbnailInput initialValue={course.thumbnailUrl || ""} />
+            <p className="text-xs text-muted-foreground">Upload a cover image for your course (16:9 recommended).</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

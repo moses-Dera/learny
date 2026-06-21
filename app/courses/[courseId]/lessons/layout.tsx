@@ -16,23 +16,6 @@ export default async function CourseLayout({
 
   const { courseId } = await params;
 
-  // Check enrollment and fetch course structure
-  const enrollment = await prisma.enrollment.findUnique({
-    where: {
-      userId_courseId: {
-        userId: session.user.id,
-        courseId: courseId,
-      },
-    },
-  });
-
-  const isInstructor = session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN";
-
-  // If not enrolled and not an instructor, deny access
-  if (!enrollment && !isInstructor) {
-    redirect(`/courses/${courseId}`); 
-  }
-
   const course = await prisma.course.findUnique({
     where: { id: courseId },
     include: {
@@ -53,6 +36,29 @@ export default async function CourseLayout({
   });
 
   if (!course) notFound();
+
+  const isOwner = session.user.id === course.instructorId;
+  const isAdmin = session.user.role === "ADMIN";
+  const isPublished = course.status === "PUBLISHED";
+
+  if (!isPublished && !isOwner && !isAdmin) {
+    notFound();
+  }
+
+  // Check enrollment
+  const enrollment = await prisma.enrollment.findUnique({
+    where: {
+      userId_courseId: {
+        userId: session.user.id,
+        courseId: courseId,
+      },
+    },
+  });
+
+  // If not enrolled and not owner/admin, deny access
+  if (!enrollment && !isOwner && !isAdmin) {
+    redirect(`/courses/${courseId}`); 
+  }
 
   // Calculate progress
   const totalLessons = course.sections.flatMap((s) => s.lessons).length;

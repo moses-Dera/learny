@@ -34,6 +34,14 @@ export default async function CourseDetailPage({
 
   if (!course) notFound();
 
+  const isPublished = course.status === "PUBLISHED";
+  const isOwner = session?.user?.id === course.instructorId;
+  const isAdmin = session?.user?.role === "ADMIN";
+
+  if (!isPublished && !isOwner && !isAdmin) {
+    notFound();
+  }
+
   // Check if enrolled
   let isEnrolled = false;
   if (session?.user?.id) {

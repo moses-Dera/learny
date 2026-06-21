@@ -11,6 +11,7 @@ const courseSchema = z.object({
   price: z.coerce.number().min(0, "Price must be positive").optional(),
   categoryId: z.string().min(1, "Please select a category"),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"], { message: "Please select a valid difficulty level" }),
+  thumbnailUrl: z.string().url().optional().or(z.literal("")),
 });
 
 export async function createCourseAction(state: any, formData: FormData) {
@@ -26,6 +27,7 @@ export async function createCourseAction(state: any, formData: FormData) {
     price: formData.get("price"),
     categoryId: formData.get("categoryId") as string,
     level: formData.get("level") as string,
+    thumbnailUrl: formData.get("thumbnailUrl") as string,
   };
 
   const parsed = courseSchema.safeParse(data);
@@ -37,7 +39,7 @@ export async function createCourseAction(state: any, formData: FormData) {
     };
   }
 
-  const { title, description, price, categoryId, level } = parsed.data;
+  const { title, description, price, categoryId, level, thumbnailUrl } = parsed.data;
 
   // Generate a URL-friendly slug with a random suffix for uniqueness
   const baseSlug = title
@@ -56,6 +58,7 @@ export async function createCourseAction(state: any, formData: FormData) {
         slug,
         categoryId,
         level,
+        thumbnailUrl: thumbnailUrl || null,
         instructorId: session.user.id,
         status: "DRAFT",
       },
@@ -173,6 +176,7 @@ const updateCourseSchema = z.object({
   price: z.coerce.number().min(0).optional(),
   categoryId: z.string().optional().nullable(),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]).optional(),
+  thumbnailUrl: z.string().url().optional().or(z.literal("")),
 });
 
 export async function updateCourseAction(courseId: string, formData: FormData) {
@@ -188,6 +192,7 @@ export async function updateCourseAction(courseId: string, formData: FormData) {
     price: formData.get("price") ? formData.get("price") : undefined,
     level: formData.get("level") ? formData.get("level") as string : undefined,
     categoryId: formData.get("categoryId") ? formData.get("categoryId") as string : undefined,
+    thumbnailUrl: formData.get("thumbnailUrl") !== null ? formData.get("thumbnailUrl") as string : undefined,
   };
 
   const parsed = updateCourseSchema.safeParse(data);

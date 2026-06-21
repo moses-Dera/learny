@@ -50,7 +50,7 @@ export default async function AdminCoursesReviewPage() {
               <CardHeader className="flex flex-row items-start justify-between pb-2">
                 <div>
                   <CardTitle className="text-xl">
-                    <Link href={`/courses/${course.slug}`} className="hover:underline">
+                    <Link href={`/courses/${course.id}`} className="hover:underline">
                       {course.title}
                     </Link>
                   </CardTitle>
@@ -72,7 +72,7 @@ export default async function AdminCoursesReviewPage() {
                 </div>
                 <div className="flex items-center gap-4">
                   <Link
-                    href={`/courses/${course.slug}`}
+                    href={`/courses/${course.id}`}
                     target="_blank"
                     className={buttonVariants({ variant: "outline", size: "sm" })}
                   >
