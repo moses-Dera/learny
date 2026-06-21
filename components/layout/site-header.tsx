@@ -50,16 +50,16 @@ export async function SiteHeader() {
             <div className="flex items-center gap-2">
               <NotificationBell initialNotifications={notifications} />
               {session.user.role === "ADMIN" && (
-                <Link href="/admin" className={buttonVariants({ variant: "outline" })}>
+                <Link href="/admin" className={`${buttonVariants({ variant: "outline" })} hidden md:inline-flex`}>
                   Admin
                 </Link>
               )}
               {(session.user.role === "INSTRUCTOR" || session.user.role === "ADMIN") && (
-                <Link href="/instructor" className={buttonVariants({ variant: "outline" })}>
+                <Link href="/instructor" className={`${buttonVariants({ variant: "outline" })} hidden md:inline-flex`}>
                   Instructor
                 </Link>
               )}
-              <Link href="/dashboard" className={buttonVariants({ variant: "default" })}>
+              <Link href="/dashboard" className={`${buttonVariants({ variant: "default" })} hidden md:inline-flex`}>
                 Dashboard
               </Link>
             </div>
