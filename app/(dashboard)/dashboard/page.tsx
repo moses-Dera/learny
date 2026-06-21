@@ -72,36 +72,6 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <PlayCircle className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Enrolled Courses</h3>
-            <p className="text-3xl font-bold text-foreground">{enrollments.length}</p>
-          </div>
-        </div>
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Award className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Certificates</h3>
-            <p className="text-3xl font-bold text-foreground">0</p>
-          </div>
-        </div>
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Clock className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Hours Learned</h3>
-            <p className="text-3xl font-bold text-foreground">0</p>
-          </div>
-        </div>
-      </div>
-
       <div>
         <h3 className="text-xl font-bold text-foreground mb-6">Continue Learning</h3>
         
@@ -174,6 +144,36 @@ export default async function DashboardPage() {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <PlayCircle className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Enrolled Courses</h3>
+            <p className="text-3xl font-bold text-foreground">{enrollments.length}</p>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <Award className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Certificates</h3>
+            <p className="text-3xl font-bold text-foreground">0</p>
+          </div>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <Clock className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Hours Learned</h3>
+            <p className="text-3xl font-bold text-foreground">0</p>
+          </div>
+        </div>
       </div>
 
       {session?.user?.role === "INSTRUCTOR" && (
