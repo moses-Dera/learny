@@ -3,6 +3,9 @@ import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { ShieldCheck, BookOpen, Users, Settings, Tags, ArrowLeft } from "lucide-react";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { NotificationBell } from "@/components/layout/notification-bell";
+import { getNotifications } from "@/lib/actions/notifications";
+import { prisma } from "@/lib/db";
 
 export default async function AdminLayout({
   children,
@@ -15,6 +18,15 @@ export default async function AdminLayout({
   if (!session?.user?.id || session.user.role !== "ADMIN") {
     redirect("/");
   }
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true, role: true }
+  });
+
+  if (!dbUser) redirect("/");
+
+  const notifications = await getNotifications();
 
   return (
     <div className="min-h-screen md:h-screen flex flex-col md:flex-row bg-background md:overflow-hidden">
@@ -79,6 +91,18 @@ export default async function AdminLayout({
               <ShieldCheck className="w-5 h-5 text-primary" />
               Learny
             </Link>
+          </div>
+          <div className="flex items-center gap-4 shrink-0">
+            <NotificationBell initialNotifications={notifications} />
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex flex-col items-end">
+                <span className="text-sm font-medium text-foreground leading-none">{dbUser.name}</span>
+                <span className="text-[10px] text-primary font-bold uppercase tracking-wider mt-1">Admin</span>
+              </div>
+              <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-sm">
+                {dbUser.name?.charAt(0) || "A"}
+              </div>
+            </div>
           </div>
         </header>
         <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
