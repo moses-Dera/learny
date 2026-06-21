@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
 import { ShieldCheck, BookOpen, Users, Settings, Tags, ArrowLeft } from "lucide-react";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 export default async function AdminLayout({
   children,
@@ -16,9 +17,9 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen md:h-screen flex flex-col md:flex-row bg-background md:overflow-hidden">
       {/* Sidebar */}
-      <aside className="hidden w-64 flex-col border-r bg-muted/20 md:flex md:sticky md:top-0 md:h-screen">
+      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/20 shrink-0">
         <div className="flex h-14 items-center border-b px-4">
           <ShieldCheck className="mr-2 h-5 w-5 text-primary" />
           <span className="font-semibold tracking-tight">Admin Console</span>
@@ -69,8 +70,20 @@ export default async function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 lg:p-8">
-        {children}
+      <main className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+          <div className="flex items-center">
+            <MobileNav isAdmin={true} />
+            <h1 className="text-xl font-semibold text-foreground truncate hidden sm:block">Admin Console</h1>
+            <Link href="/" className="md:hidden flex items-center gap-2 font-bold text-lg text-foreground">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+              Learny
+            </Link>
+          </div>
+        </header>
+        <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
