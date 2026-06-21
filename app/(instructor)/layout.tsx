@@ -79,7 +79,7 @@ export default async function InstructorLayout({ children }: { children: React.R
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center">
-            <MobileNav isInstructor={true} isAdmin={dbUser.role === "ADMIN"} />
+            <MobileNav isInstructor={true} isAdmin={dbUser.role === "ADMIN"} context="instructor" />
             <h1 className="text-xl font-semibold text-foreground truncate hidden sm:block">Studio Workspace</h1>
             <Link href="/" className="md:hidden flex items-center gap-2 font-bold text-lg text-foreground">
               <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">

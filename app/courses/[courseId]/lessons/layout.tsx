@@ -135,7 +135,7 @@ export default async function CourseLayout({
       </aside>
 
       {/* Video / Lesson Content Area */}
-      <main className="flex-1 min-w-0 flex flex-col bg-muted/10 md:h-screen overflow-y-auto order-1 md:order-2">
+      <main className="shrink-0 md:flex-1 min-w-0 flex flex-col bg-muted/10 md:h-screen overflow-y-auto order-1 md:order-2">
         {children}
       </main>
     </div>

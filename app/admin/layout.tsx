@@ -1,3 +1,4 @@
+
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
@@ -85,7 +86,7 @@ export default async function AdminLayout({
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center">
-            <MobileNav isAdmin={true} />
+            <MobileNav isAdmin={true} context="admin" />
             <h1 className="text-xl font-semibold text-foreground truncate hidden sm:block">Admin Console</h1>
             <Link href="/" className="md:hidden flex items-center gap-2 font-bold text-lg text-foreground">
               <ShieldCheck className="w-5 h-5 text-primary" />
