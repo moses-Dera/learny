@@ -11,7 +11,7 @@ const courseSchema = z.object({
   price: z.coerce.number().min(0, "Price must be positive").optional(),
   categoryId: z.string().min(1, "Please select a category"),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"], { message: "Please select a valid difficulty level" }),
-  thumbnailUrl: z.string().url().optional().or(z.literal("")),
+  thumbnailUrl: z.string().optional().or(z.literal("")),
 });
 
 export async function createCourseAction(state: any, formData: FormData) {
@@ -176,7 +176,7 @@ const updateCourseSchema = z.object({
   price: z.coerce.number().min(0).optional(),
   categoryId: z.string().optional().nullable(),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]).optional(),
-  thumbnailUrl: z.string().url().optional().or(z.literal("")),
+  thumbnailUrl: z.string().optional().or(z.literal("")),
 });
 
 export async function updateCourseAction(courseId: string, formData: FormData) {
