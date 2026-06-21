@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 // ─── Typography ─────────────────────────────────────────────────────────────
@@ -22,9 +22,6 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { VisibilityWrapper } from "@/components/layout/visibility-wrapper";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     // dark mode by default as per the design system rules
-    <html lang="en" className={cn("dark", "antialiased", inter.variable, "font-sans", geist.variable)}>
+    <html lang="en" className={cn("dark", "antialiased", inter.variable, "font-sans")}>
       <body className="min-h-[100dvh] flex flex-col bg-background text-foreground">
         <VisibilityWrapper>
           <SiteHeader />
