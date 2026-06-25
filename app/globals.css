@@ -33,7 +33,7 @@
   --color-input: #362823;
   --color-ring: #E06C19;
 
-  --radius: 0.625rem;
+  --radius: 1rem;
 }
 
 :root {
@@ -63,7 +63,7 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 1rem;
   --sidebar: #F2E8E1;
   --sidebar-foreground: #15110F;
   --sidebar-primary: #E06C19;
