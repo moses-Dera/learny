@@ -65,15 +65,16 @@ export async function SiteHeader() {
               </Link>
             </div>
           ) : (
-            <div className="flex items-center gap-4 text-sm font-semibold tracking-tight">
-              <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
+            <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-semibold tracking-tight">
+              <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
                 Sign In
               </Link>
-              <span className="text-muted-foreground/30 font-light hidden sm:block text-lg font-serif italic">/</span>
+              <span className="text-muted-foreground/30 font-light text-base sm:text-lg font-serif italic">/</span>
               <Link href="/register" className="group flex items-center gap-1 text-foreground transition-colors duration-300 hover:text-primary">
-                <span>Get Started Free</span>
+                <span>Get Started</span>
+                <span className="hidden sm:inline"> Free</span>
                 <svg 
-                  className="w-4 h-4 mt-[1px] opacity-70 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" 
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-[1px] opacity-70 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" 
                   fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6" />
