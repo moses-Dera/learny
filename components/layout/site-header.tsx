@@ -70,15 +70,11 @@ export async function SiteHeader() {
                 Sign In
               </Link>
               <span className="text-muted-foreground/30 font-light text-base sm:text-lg font-serif italic">/</span>
-              <Link href="/register" className="group flex items-center gap-1 text-foreground transition-colors duration-300 hover:text-primary">
-                <span>Get Started</span>
-                <span className="hidden sm:inline"> Free</span>
-                <svg 
-                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-[1px] opacity-70 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" 
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6" />
-                </svg>
+              <Link href="/register" className="relative group text-foreground transition-colors py-1">
+                <span className="relative z-10 group-hover:text-primary transition-colors duration-300">
+                  Get Started<span className="hidden sm:inline"> Free</span>
+                </span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </div>
           )}
