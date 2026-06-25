@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { WebGLGradient } from "@/components/ui/webgl-gradient";
 
@@ -29,28 +30,49 @@ export default function LandingPage() {
               </div>
             </div>
             
-            <div className="hidden lg:block flex-1 w-full max-w-lg relative animate-fade-in" style={{ animationDelay: "300ms" }}>
-              <div className="aspect-[4/3] w-full relative rounded-2xl overflow-hidden border border-border bg-card shadow-2xl">
-                {/* Decorative Design Elements */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-background to-primary/10" />
-                <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary rounded-full mix-blend-screen filter blur-[60px] opacity-20 animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-accent rounded-full mix-blend-screen filter blur-[60px] opacity-10" />
-                <div className="absolute inset-6 glass rounded-xl flex flex-col p-4 border border-border/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-background border border-border animate-pulse" />
-                    <div className="space-y-2">
-                      <div className="w-24 h-2 bg-muted rounded-full" />
-                      <div className="w-16 h-2 bg-muted rounded-full" />
-                    </div>
+            <div className="hidden lg:block flex-1 w-full relative animate-fade-in" style={{ animationDelay: "300ms" }}>
+              <div className="relative w-full max-w-[420px] ml-auto aspect-[4/5] mt-8">
+                {/* Main Image Container - Organic Shape */}
+                <div className="absolute inset-0 rounded-[2.5rem] rounded-tr-[6rem] rounded-bl-[6rem] overflow-hidden group shadow-2xl border border-border/40">
+                  {/* Subtle color grading overlay that fades on hover */}
+                  <div className="absolute inset-0 bg-primary/30 mix-blend-overlay z-10 opacity-70 group-hover:opacity-0 transition-opacity duration-700 pointer-events-none"></div>
+                  
+                  <Image 
+                    src="https://t3.ftcdn.net/jpg/07/77/87/10/240_F_777871044_TzXiJr8T4vMI6ZAQNCddOpp02ZqzABDo.jpg"
+                    alt="Student learning online"
+                    fill
+                    unoptimized
+                    className="object-cover transform group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+
+                {/* Floating Video Play Badge */}
+                <div className="absolute top-12 -left-12 glass border border-border/40 p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-4 z-20 hover:-translate-y-1 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg">
+                    <svg className="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    </svg>
                   </div>
-                  <div className="flex-1 rounded-lg bg-background border border-border flex items-center justify-center relative overflow-hidden group cursor-pointer">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5" />
-                    <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110 duration-300">
-                      <svg className="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      </svg>
-                    </div>
+                  <div>
+                    <p className="font-bold text-foreground leading-tight">Masterclass</p>
+                    <p className="text-xs text-muted-foreground">Playing now...</p>
                   </div>
+                </div>
+
+                {/* Floating Metric Badge using other images */}
+                <div className="absolute -bottom-8 -right-8 glass border border-border/40 p-4 pr-6 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-4 z-20 hover:-translate-y-1 transition-transform duration-300">
+                  <div className="flex -space-x-3">
+                     <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
+                       <Image src="https://t4.ftcdn.net/jpg/18/98/30/85/240_F_1898308559_89XeveVfEafXMkOQqC60SMGoUsulv8qW.jpg" alt="Student" fill unoptimized className="object-cover" />
+                     </div>
+                     <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
+                       <Image src="https://t4.ftcdn.net/jpg/20/52/27/89/240_F_2052278943_dKvrOA3R1V3dluuhKI72rz0YyOgZhBum.jpg" alt="Student" fill unoptimized className="object-cover" />
+                     </div>
+                     <div className="w-10 h-10 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center relative z-10 shadow-sm">
+                       <span className="text-xs font-bold text-primary">10k+</span>
+                     </div>
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">Active Learners</p>
                 </div>
               </div>
             </div>
