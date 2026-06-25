@@ -10,20 +10,51 @@ export default function LandingPage() {
         <WebGLGradient />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
           
-          {/* Decorative Graffiti - Left */}
-          <div className="hidden lg:block absolute left-0 xl:left-12 top-20 opacity-40 pointer-events-none -rotate-12 hover:rotate-0 transition-transform duration-700">
-            <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary stroke-current">
-              <path d="M 40,150 C 30,100 60,40 120,40 C 170,40 180,90 150,130 C 120,170 60,160 40,110 C 20,60 70,20 130,20" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="animate-[spin_20s_linear_infinite]" />
-              <path d="M 110,5 L 130,20 L 110,35" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          {/* 1. Top Left - Spring/Scribble */}
+          <div className="hidden lg:block absolute left-[5%] xl:left-[10%] top-[15%] opacity-30 pointer-events-none -rotate-12 hover:rotate-12 transition-transform duration-1000">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary stroke-current">
+              <path d="M 20,80 C 40,100 80,90 90,60 C 100,30 60,10 40,30 C 20,50 30,80 60,90 C 90,100 100,70 100,70" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-[spin_20s_linear_infinite]" />
             </svg>
           </div>
 
-          {/* Decorative Graffiti - Right */}
-          <div className="hidden lg:block absolute right-0 xl:right-12 top-1/2 -translate-y-1/2 opacity-30 pointer-events-none rotate-12 hover:rotate-0 transition-transform duration-700">
-            <svg width="140" height="140" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-muted-foreground stroke-current">
-              <path d="M 20,40 C 80,10 140,20 170,60 C 200,100 160,160 100,180 C 40,200 10,140 20,90" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="10 15" />
-              <path d="M 80,100 L 120,100 M 100,80 L 100,120" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="160" cy="40" r="10" strokeWidth="4" />
+          {/* 2. Mid Left - Sparkle */}
+          <div className="hidden lg:block absolute left-[8%] xl:left-[15%] top-[45%] opacity-40 pointer-events-none animate-pulse">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-muted-foreground stroke-current">
+              <path d="M 50,10 L 50,90 M 10,50 L 90,50 M 20,20 L 80,80 M 20,80 L 80,20" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* 3. Bottom Left - Abstract Arrow */}
+          <div className="hidden lg:block absolute left-[12%] xl:left-[20%] bottom-[20%] opacity-50 pointer-events-none -rotate-6">
+            <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary stroke-current">
+              <path d="M 80,80 C 60,80 30,60 20,20" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M 20,20 L 40,25 M 20,20 L 25,40" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* 4. Top Right - Dashed Orbit */}
+          <div className="hidden lg:block absolute right-[8%] xl:right-[15%] top-[20%] opacity-30 pointer-events-none rotate-12 hover:-rotate-12 transition-transform duration-1000">
+            <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-muted-foreground stroke-current">
+              <circle cx="50" cy="50" r="40" strokeWidth="3" strokeDasharray="6 8" />
+              <path d="M 50,20 L 50,80 M 20,50 L 80,50" strokeWidth="3" strokeLinecap="round" />
+              <circle cx="80" cy="20" r="4" fill="currentColor" className="text-primary" />
+            </svg>
+          </div>
+
+          {/* 5. Mid Right - Plus Cluster */}
+          <div className="hidden lg:block absolute right-[5%] xl:right-[10%] top-[50%] opacity-40 pointer-events-none">
+            <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-foreground stroke-current">
+              <path d="M 20,10 L 20,30 M 10,20 L 30,20" strokeWidth="4" strokeLinecap="round" />
+              <path d="M 80,40 L 80,60 M 70,50 L 90,50" strokeWidth="4" strokeLinecap="round" />
+              <path d="M 40,80 L 40,100 M 30,90 L 50,90" strokeWidth="4" strokeLinecap="round" className="text-primary" />
+            </svg>
+          </div>
+
+          {/* 6. Bottom Right - Wavy Scribble */}
+          <div className="hidden lg:block absolute right-[12%] xl:right-[18%] bottom-[25%] opacity-50 pointer-events-none rotate-6">
+            <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary stroke-current">
+              <path d="M 10,50 Q 25,20 50,50 T 90,50" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <path d="M 20,60 Q 35,30 60,60 T 100,60" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.5" />
             </svg>
           </div>
 
