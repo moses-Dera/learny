@@ -1,13 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
-import { WebGLGradient } from "@/components/ui/webgl-gradient";
 
 export default function LandingPage() {
   return (
     <>
       <section className="relative min-h-[50vh] lg:min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden py-16 lg:py-32">
-        <WebGLGradient />
+        {/* Performant CSS Ambient Glow (Replaces heavy WebGL) */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-primary/20 blur-[150px] rounded-[100%] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen" />
+        
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
           
           {/* 1. Top Left - Spring/Scribble */}
