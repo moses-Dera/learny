@@ -76,24 +76,80 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── Features ────────────────────────────────────────────────────── */}
-      <section className="py-24 container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard 
-            icon={<LockIcon />}
-            title="Paywall-Protected Video"
-            description="Secure streaming via Mux with signed playback tokens to ensure your content is only accessible to enrolled students."
-          />
-          <FeatureCard 
-            icon={<ChartIcon />}
-            title="Track Your Progress"
-            description="Automatic save-states. Pick up exactly where you left off with precise second-by-second video progress tracking."
-          />
-          <FeatureCard 
-            icon={<BadgeIcon />}
-            title="Earn Certificates"
-            description="Showcase your new skills with verifiable completion certificates awarded automatically upon reaching 100% progress."
-          />
+      {/* ─── Features (Organic Boxless) ──────────────────────────────────── */}
+      <section className="py-32 relative overflow-hidden">
+        {/* Subtle background glow to ground the section */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-16 lg:gap-8 items-start">
+            
+            {/* Left Column: Huge Sticky Title */}
+            <div className="lg:col-span-5 lg:sticky lg:top-32">
+              <h2 className="text-4xl lg:text-6xl font-bold tracking-tighter mb-6 leading-[1.1]">
+                Everything <br/><span className="text-muted-foreground">you need to</span><br/>scale knowledge.
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-md">
+                We stripped away the noise and generic boxes to focus entirely on the learning experience.
+              </p>
+            </div>
+
+            {/* Right Column: Flowing Features */}
+            <div className="lg:col-span-6 lg:col-start-7 space-y-24 mt-12 lg:mt-0">
+              
+              {/* Feature 1 */}
+              <div className="relative group">
+                <div className="absolute -left-8 -top-8 text-primary/10 group-hover:text-primary/20 transition-colors duration-700 transform scale-[4] -rotate-12 pointer-events-none">
+                  <LockIcon />
+                </div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="text-sm font-bold text-primary tracking-widest uppercase">01</span>
+                    <div className="h-px w-12 bg-primary/30" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">Paywall-Protected Video</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Secure streaming via Mux with signed playback tokens to ensure your premium content is strictly isolated and only accessible to enrolled students.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="relative group lg:ml-12">
+                <div className="absolute -right-8 -top-8 text-primary/10 group-hover:text-primary/20 transition-colors duration-700 transform scale-[4] rotate-12 pointer-events-none">
+                  <ChartIcon />
+                </div>
+                <div className="relative z-10 text-right lg:text-left">
+                  <div className="flex items-center justify-end lg:justify-start gap-4 mb-4">
+                    <span className="text-sm font-bold text-primary tracking-widest uppercase">02</span>
+                    <div className="h-px w-12 bg-primary/30" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">Track Your Progress</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Automatic save-states. Your students can pick up exactly where they left off with precise second-by-second video progress tracking.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="relative group">
+                <div className="absolute -left-8 top-0 text-primary/10 group-hover:text-primary/20 transition-colors duration-700 transform scale-[4] -rotate-6 pointer-events-none">
+                  <BadgeIcon />
+                </div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="text-sm font-bold text-primary tracking-widest uppercase">03</span>
+                    <div className="h-px w-12 bg-primary/30" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">Earn Certificates</h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Showcase new skills with verifiable completion certificates awarded automatically upon reaching 100% progress.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </section>
 
@@ -138,17 +194,7 @@ export default function LandingPage() {
 
 // ─── Inline Components ──────────────────────────────────────────────────────
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="glass p-8 rounded-2xl transition-transform hover:-translate-y-1 duration-300">
-      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-6">
-        {icon}
-      </div>
-      <h3 className="text-xl font-semibold mb-3 text-foreground">{title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{description}</p>
-    </div>
-  );
-}
+
 
 function CourseCard({ title, author, price, imageColor }: { title: string, author: string, price: number, imageColor: string }) {
   return (
