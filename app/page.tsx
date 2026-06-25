@@ -36,29 +36,33 @@ export default function LandingPage() {
             Join 10,000+ learners accessing world-class courses with paywall-protected video, progress tracking, and verified certificates.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up mb-12 w-full sm:w-auto" style={{ animationDelay: "200ms" }}>
-            <Link href="/courses" className={`${buttonVariants({ size: "lg" })} w-full sm:w-auto h-12 px-8 text-sm font-semibold bg-primary text-white border border-transparent hover:bg-transparent hover:border-primary hover:text-primary transition-all`}>
+          <div className="flex flex-col items-center justify-center gap-6 animate-slide-up mb-12 w-full max-w-md mx-auto" style={{ animationDelay: "200ms" }}>
+            <Link href="/courses" className={`${buttonVariants({ size: "lg" })} w-full sm:w-auto min-w-[240px] h-14 rounded-full text-base font-semibold bg-primary text-white shadow-[0_0_30px_rgba(224,108,25,0.3)] hover:shadow-[0_0_50px_rgba(224,108,25,0.5)] transition-all hover:scale-105`}>
               Start Learning Free
             </Link>
-            <Link href="/register" className={`${buttonVariants({ size: "lg", variant: "outline" })} w-full sm:w-auto h-12 px-8 text-sm font-semibold bg-transparent text-foreground border border-foreground/30 hover:bg-foreground hover:!text-black transition-all`}>
-              Become an Instructor
+            
+            <Link href="/register" className="group flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              or Become an Instructor 
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
 
-          {/* Centered Metric Badge */}
-          <div className="animate-fade-in glass border border-border/40 p-2 pr-6 rounded-full shadow-lg flex items-center gap-4 hover:-translate-y-1 transition-transform duration-300" style={{ animationDelay: "400ms" }}>
+          {/* Minimal Trust Element (No Pill) */}
+          <div className="animate-fade-in flex flex-col sm:flex-row items-center gap-4 opacity-90" style={{ animationDelay: "400ms" }}>
             <div className="flex -space-x-3">
-               <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
+               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
                  <Image src="https://t4.ftcdn.net/jpg/18/98/30/85/240_F_1898308559_89XeveVfEafXMkOQqC60SMGoUsulv8qW.jpg" alt="Student" fill unoptimized className="object-cover" />
                </div>
-               <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
+               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
                  <Image src="https://t4.ftcdn.net/jpg/20/52/27/89/240_F_2052278943_dKvrOA3R1V3dluuhKI72rz0YyOgZhBum.jpg" alt="Student" fill unoptimized className="object-cover" />
                </div>
-               <div className="w-10 h-10 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center relative z-10 shadow-sm">
-                 <span className="text-xs font-bold text-primary">10k+</span>
+               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center relative z-10 shadow-sm">
+                 <span className="text-[10px] sm:text-xs font-bold text-primary">10k+</span>
                </div>
             </div>
-            <p className="text-sm font-medium text-foreground">Active Learners</p>
+            <div className="text-sm font-medium text-muted-foreground">
+              <span className="text-foreground">10,000+</span> active learners
+            </div>
           </div>
 
         </div>
