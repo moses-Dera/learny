@@ -6,78 +6,44 @@ import { WebGLGradient } from "@/components/ui/webgl-gradient";
 export default function LandingPage() {
   return (
     <>
-      {/* ─── Hero Section ────────────────────────────────────────────────── */}
-      <section className="relative min-h-[50vh] lg:min-h-[calc(100vh-4rem)] flex items-center overflow-hidden py-12 lg:py-24">
+      <section className="relative min-h-[50vh] lg:min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden py-16 lg:py-32">
         <WebGLGradient />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
-            <div className="flex-1 text-center lg:text-left pt-8 lg:pt-0">
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter mb-6 animate-slide-up leading-[1.1]">
-                The <span className="font-serif italic font-normal text-primary pr-2">Smarter</span> Way to <br className="hidden lg:block" />
-                Learn & Teach <span className="font-serif italic font-normal text-muted-foreground/60 pr-2">Online.</span>
-              </h1>
-              
-              <p className="text-base sm:text-lg text-foreground/80 mb-8 max-w-xl mx-auto lg:mx-0 animate-slide-up" style={{ animationDelay: "100ms" }}>
-                Join 10,000+ learners accessing world-class courses with paywall-protected video, progress tracking, and verified certificates.
-              </p>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+          
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter mb-6 animate-slide-up leading-[1.1] max-w-4xl">
+            The <span className="font-serif italic font-normal text-primary pr-2">Smarter</span> Way to <br className="hidden md:block" />
+            Learn & Teach <span className="font-serif italic font-normal text-muted-foreground/60 pr-2">Online.</span>
+          </h1>
+          
+          <p className="text-base sm:text-lg text-foreground/80 mb-10 max-w-xl animate-slide-up" style={{ animationDelay: "100ms" }}>
+            Join 10,000+ learners accessing world-class courses with paywall-protected video, progress tracking, and verified certificates.
+          </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-slide-up" style={{ animationDelay: "200ms" }}>
-                <Link href="/courses" className={`${buttonVariants({ size: "lg" })} w-full sm:w-auto h-11 px-8 text-sm font-semibold bg-primary text-white border border-transparent hover:bg-transparent hover:border-primary hover:text-primary transition-all`}>
-                  Start Learning Free
-                </Link>
-                <Link href="/register" className={`${buttonVariants({ size: "lg", variant: "outline" })} w-full sm:w-auto h-11 px-8 text-sm font-semibold bg-transparent text-foreground border border-foreground/30 hover:bg-foreground hover:!text-black transition-all`}>
-                  Become an Instructor
-                </Link>
-              </div>
-            </div>
-            
-            <div className="flex-1 w-full relative animate-fade-in mt-12 lg:mt-0" style={{ animationDelay: "300ms" }}>
-              <div className="relative w-full max-w-[340px] sm:max-w-[440px] lg:max-w-[560px] mx-auto lg:ml-auto aspect-[4/5] lg:aspect-[11/12]">
-                {/* Main Image Container - Organic Shape */}
-                <div className="absolute inset-0 rounded-[2.5rem] rounded-tr-[6rem] rounded-bl-[6rem] overflow-hidden group shadow-2xl border border-border/40">
-                  {/* Subtle color grading overlay that fades on hover */}
-                  <div className="absolute inset-0 bg-primary/30 mix-blend-overlay z-10 opacity-70 group-hover:opacity-0 transition-opacity duration-700 pointer-events-none"></div>
-                  
-                  <Image 
-                    src="https://t3.ftcdn.net/jpg/07/77/87/10/240_F_777871044_TzXiJr8T4vMI6ZAQNCddOpp02ZqzABDo.jpg"
-                    alt="Student learning online"
-                    fill
-                    unoptimized
-                    className="object-cover transform group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-
-                {/* Floating Video Play Badge */}
-                <div className="absolute top-12 -left-12 glass border border-border/40 p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-4 z-20 hover:-translate-y-1 transition-transform duration-300">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg">
-                    <svg className="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-bold text-foreground leading-tight">Masterclass</p>
-                    <p className="text-xs text-muted-foreground">Playing now...</p>
-                  </div>
-                </div>
-
-                {/* Floating Metric Badge using other images */}
-                <div className="absolute -bottom-8 -right-8 glass border border-border/40 p-4 pr-6 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-4 z-20 hover:-translate-y-1 transition-transform duration-300">
-                  <div className="flex -space-x-3">
-                     <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
-                       <Image src="https://t4.ftcdn.net/jpg/18/98/30/85/240_F_1898308559_89XeveVfEafXMkOQqC60SMGoUsulv8qW.jpg" alt="Student" fill unoptimized className="object-cover" />
-                     </div>
-                     <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
-                       <Image src="https://t4.ftcdn.net/jpg/20/52/27/89/240_F_2052278943_dKvrOA3R1V3dluuhKI72rz0YyOgZhBum.jpg" alt="Student" fill unoptimized className="object-cover" />
-                     </div>
-                     <div className="w-10 h-10 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center relative z-10 shadow-sm">
-                       <span className="text-xs font-bold text-primary">10k+</span>
-                     </div>
-                  </div>
-                  <p className="text-sm font-semibold text-foreground">Active Learners</p>
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up mb-12 w-full sm:w-auto" style={{ animationDelay: "200ms" }}>
+            <Link href="/courses" className={`${buttonVariants({ size: "lg" })} w-full sm:w-auto h-12 px-8 text-sm font-semibold bg-primary text-white border border-transparent hover:bg-transparent hover:border-primary hover:text-primary transition-all`}>
+              Start Learning Free
+            </Link>
+            <Link href="/register" className={`${buttonVariants({ size: "lg", variant: "outline" })} w-full sm:w-auto h-12 px-8 text-sm font-semibold bg-transparent text-foreground border border-foreground/30 hover:bg-foreground hover:!text-black transition-all`}>
+              Become an Instructor
+            </Link>
           </div>
+
+          {/* Centered Metric Badge */}
+          <div className="animate-fade-in glass border border-border/40 p-2 pr-6 rounded-full shadow-lg flex items-center gap-4 hover:-translate-y-1 transition-transform duration-300" style={{ animationDelay: "400ms" }}>
+            <div className="flex -space-x-3">
+               <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
+                 <Image src="https://t4.ftcdn.net/jpg/18/98/30/85/240_F_1898308559_89XeveVfEafXMkOQqC60SMGoUsulv8qW.jpg" alt="Student" fill unoptimized className="object-cover" />
+               </div>
+               <div className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative shadow-sm">
+                 <Image src="https://t4.ftcdn.net/jpg/20/52/27/89/240_F_2052278943_dKvrOA3R1V3dluuhKI72rz0YyOgZhBum.jpg" alt="Student" fill unoptimized className="object-cover" />
+               </div>
+               <div className="w-10 h-10 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center relative z-10 shadow-sm">
+                 <span className="text-xs font-bold text-primary">10k+</span>
+               </div>
+            </div>
+            <p className="text-sm font-medium text-foreground">Active Learners</p>
+          </div>
+
         </div>
       </section>
 
