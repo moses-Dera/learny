@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { WebGLGradient } from "@/components/ui/webgl-gradient";
 
 export default function LandingPage() {
   return (
     <>
       {/* ─── Hero Section ────────────────────────────────────────────────── */}
-      <section className="relative min-h-[calc(100vh-4rem)] flex items-center overflow-hidden py-12">
+      <section className="relative min-h-[50vh] lg:min-h-[calc(100vh-4rem)] flex items-center overflow-hidden py-12 lg:py-24">
+        <WebGLGradient />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
             <div className="flex-1 text-center lg:text-left pt-8 lg:pt-0">
