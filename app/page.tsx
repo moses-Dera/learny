@@ -30,8 +30,8 @@ export default function LandingPage() {
               </div>
             </div>
             
-            <div className="hidden lg:block flex-1 w-full relative animate-fade-in" style={{ animationDelay: "300ms" }}>
-              <div className="relative w-full max-w-[420px] ml-auto aspect-[4/5] mt-8">
+            <div className="flex-1 w-full relative animate-fade-in mt-12 lg:mt-0" style={{ animationDelay: "300ms" }}>
+              <div className="relative w-full max-w-[340px] sm:max-w-[440px] lg:max-w-[560px] mx-auto lg:ml-auto aspect-[4/5] lg:aspect-[11/12]">
                 {/* Main Image Container - Organic Shape */}
                 <div className="absolute inset-0 rounded-[2.5rem] rounded-tr-[6rem] rounded-bl-[6rem] overflow-hidden group shadow-2xl border border-border/40">
                   {/* Subtle color grading overlay that fades on hover */}
