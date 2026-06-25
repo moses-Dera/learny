@@ -6,10 +6,6 @@ export default function LandingPage() {
   return (
     <>
       <section className="relative min-h-[50vh] lg:min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden py-16 lg:py-32">
-        {/* Performant CSS Ambient Glow (Replaces heavy WebGL) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-primary/20 blur-[150px] rounded-[100%] pointer-events-none" />
-        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen" />
-        
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
           
           {/* 1. Top Left - Spring/Scribble */}
@@ -121,9 +117,6 @@ export default function LandingPage() {
 
       {/* ─── Features (Organic Boxless) ──────────────────────────────────── */}
       <section className="py-32 relative overflow-hidden">
-        {/* Subtle background glow to ground the section */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-        
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-12 gap-16 lg:gap-8 items-start">
             
