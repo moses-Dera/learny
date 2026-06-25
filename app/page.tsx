@@ -10,6 +10,23 @@ export default function LandingPage() {
         <WebGLGradient />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
           
+          {/* Decorative Graffiti - Left */}
+          <div className="hidden lg:block absolute left-0 xl:left-12 top-20 opacity-40 pointer-events-none -rotate-12 hover:rotate-0 transition-transform duration-700">
+            <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary stroke-current">
+              <path d="M 40,150 C 30,100 60,40 120,40 C 170,40 180,90 150,130 C 120,170 60,160 40,110 C 20,60 70,20 130,20" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="animate-[spin_20s_linear_infinite]" />
+              <path d="M 110,5 L 130,20 L 110,35" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* Decorative Graffiti - Right */}
+          <div className="hidden lg:block absolute right-0 xl:right-12 top-1/2 -translate-y-1/2 opacity-30 pointer-events-none rotate-12 hover:rotate-0 transition-transform duration-700">
+            <svg width="140" height="140" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-muted-foreground stroke-current">
+              <path d="M 20,40 C 80,10 140,20 170,60 C 200,100 160,160 100,180 C 40,200 10,140 20,90" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="10 15" />
+              <path d="M 80,100 L 120,100 M 100,80 L 100,120" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="160" cy="40" r="10" strokeWidth="4" />
+            </svg>
+          </div>
+
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter mb-6 animate-slide-up leading-[1.1] max-w-4xl">
             The <span className="font-serif italic font-normal text-primary pr-2">Smarter</span> Way to <br className="hidden md:block" />
             Learn & Teach <span className="font-serif italic font-normal text-muted-foreground/60 pr-2">Online.</span>
