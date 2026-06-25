@@ -12,8 +12,9 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
             <div className="flex-1 text-center lg:text-left pt-8 lg:pt-0">
-              <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tighter mb-6 animate-slide-up leading-tight">
-                <span className="bg-primary text-[#15110F] px-2 rounded-md box-decoration-clone">The</span> <span className="gradient-text">Smarter</span> <span className="bg-primary text-[#15110F] px-2 rounded-md box-decoration-clone">Way to</span><br className="hidden lg:block" /> <span className="bg-primary text-[#15110F] px-2 rounded-md box-decoration-clone leading-[1.5] mt-1 inline-block">Learn & Teach Online</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter mb-6 animate-slide-up leading-[1.1]">
+                The <span className="font-serif italic font-normal text-primary pr-2">Smarter</span> Way to <br className="hidden lg:block" />
+                Learn & Teach <span className="font-serif italic font-normal text-muted-foreground/60 pr-2">Online.</span>
               </h1>
               
               <p className="text-base sm:text-lg text-foreground/80 mb-8 max-w-xl mx-auto lg:mx-0 animate-slide-up" style={{ animationDelay: "100ms" }}>
@@ -109,7 +110,7 @@ export default function LandingPage() {
             {/* Left Column: Huge Sticky Title */}
             <div className="lg:col-span-5 lg:sticky lg:top-32">
               <h2 className="text-4xl lg:text-6xl font-bold tracking-tighter mb-6 leading-[1.1]">
-                Everything <br/><span className="text-muted-foreground">you need to</span><br/>scale knowledge.
+                Everything <br/><span className="font-serif italic font-normal text-primary pr-2">you need to</span><br/>scale knowledge.
               </h2>
               <p className="text-xl text-muted-foreground max-w-md">
                 We stripped away the noise and generic boxes to focus entirely on the learning experience.

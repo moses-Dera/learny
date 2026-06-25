@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 // ─── Typography ─────────────────────────────────────────────────────────────
-// Inter is the primary typeface. Loaded via Next.js optimization.
-const inter = Inter({
-  variable: "--font-inter",
+const outfit = Outfit({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
 });
@@ -29,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     // dark mode by default as per the design system rules
-    <html lang="en" className={cn("dark", "antialiased", inter.variable, "font-sans")}>
+    <html lang="en" className={cn("dark", "antialiased", outfit.variable, playfair.variable, "font-sans")}>
       <body className="min-h-[100dvh] flex flex-col bg-background text-foreground">
         <VisibilityWrapper>
           <SiteHeader />
