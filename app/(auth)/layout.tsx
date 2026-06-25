@@ -4,16 +4,16 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       {/* Left side - Auth Form */}
-      <div className="flex flex-col justify-center px-8 sm:px-16 lg:px-24 xl:px-32 relative bg-background">
-        <div className="absolute top-8 left-8 sm:top-12 sm:left-16 lg:left-24">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight text-foreground hover:opacity-80 transition-opacity">
+      <div className="flex flex-col min-h-screen px-8 sm:px-16 lg:px-24 xl:px-32 bg-background">
+        <div className="pt-8 sm:pt-12 w-full">
+          <Link href="/" className="inline-flex items-center gap-2 font-bold text-xl tracking-tight text-foreground hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-[#15110F]"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             </div>
             Learny
           </Link>
         </div>
-        <div className="w-full max-w-sm mx-auto mt-24 lg:mt-0">
+        <div className="flex-1 flex flex-col justify-center w-full max-w-sm mx-auto py-12">
           {children}
         </div>
       </div>

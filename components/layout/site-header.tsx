@@ -65,14 +65,16 @@ export async function SiteHeader() {
               </Link>
             </div>
           ) : (
-            <>
-              <Link href="/login" className={`${buttonVariants({ variant: "ghost" })} hidden sm:inline-flex`}>
+            <div className="flex items-center gap-4 text-sm font-semibold tracking-tight">
+              <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
                 Sign In
               </Link>
-              <Link href="/register" className={buttonVariants({ variant: "default" })}>
-                Get Started Free
+              <span className="text-muted-foreground/30 font-light hidden sm:block text-lg font-serif italic">/</span>
+              <Link href="/register" className="relative group text-foreground transition-colors">
+                <span className="relative z-10 group-hover:text-primary transition-colors">Get Started Free</span>
+                <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-primary/20 group-hover:bg-primary transition-colors"></span>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
